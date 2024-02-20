@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Origami Editor</title>
+    <script src="./index.js" type="module" defer></script>
+    <link href="./src/output.css" rel="stylesheet">
+</head>
+<body>
+    <div class="flex h-screen">
+        <div class="w-80" id="sidebar">
+            <form id="menu">
+                <div class="flex gap-1">
+                    <label for="#segment">Segments</label>
+                    <input type="text" id="segment">
+                    <button type="submit">Save</button>
+                </div>
+            </form>
+        </div>
+        <div class="grow bg-slate-100 flex" id="display">
+            <div class="bg-slate-200 w-[600px] h-[600px] self-center justify-center relative" id="grid" oncontextmenu="javascript:return false;">
+            </div>
+        </div>
+    </div>
+</body>
+</html>
