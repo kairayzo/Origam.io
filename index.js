@@ -1,19 +1,25 @@
-import { Line } from "./Line.js"
-import { Circle } from "./Circle.js"
-import { SVG } from "./SVG.js"
-import { Vertice } from "./Vertice.js"
+import { line } from "./Line.js"
+import { svg } from "./SVG.js"
+import { vertex as vertex } from "./Vertex.js"
 
 const DEFAULT_SEGMENT = 8
+const DEFAULT_STROKE = 2
+const DEFAULT_STROKE_COLOR = 'black'
+export const vertexList = []
 
 const grid = document.querySelector('#grid')
 const form = document.querySelector('#menu')
 const segInput = document.querySelector('#segment')
+const strInput = document.querySelector('#stroke')
 segInput.value = DEFAULT_SEGMENT
+strInput.value = DEFAULT_STROKE
 form.addEventListener('submit',(e)=>render(e))
 
 function clearGrid() {
     const grid = document.querySelector('#grid')
     grid.innerHTML = ''
+    let newGrid = grid.cloneNode(true);
+    grid.parentNode.replaceChild(newGrid, grid)
 }
 
 function generateGridlines(segment) {
@@ -22,10 +28,10 @@ function generateGridlines(segment) {
     const interval = Math.ceil(height/segment)
     console.log(height, interval)
 
-    const svgElem = new SVG(height, height)
-    for (let i=interval; i<height; i+=interval) {
-        const lineElemX = new Line(0, i, height, i, 'stroke:red;stroke-width:2')
-        const lineElemY = new Line(i, 0, i, height, 'stroke:red;stroke-width:2')
+    const svgElem = svg(height, height)
+    for (let i = interval; i < height; i += interval) {
+        const lineElemX = line(0, i, height, i, 'stroke:red;stroke-width:2')
+        const lineElemY = line(i, 0, i, height, 'stroke:red;stroke-width:2')
         svgElem.append(lineElemX, lineElemY)
     }
     grid.append(svgElem)
@@ -38,36 +44,25 @@ function generateSelectors(segment) {
     const radius = 6
     console.log(height, interval)
 
-    for (let i=0; i<=height+radius; i+=interval) {
-        for (let j=0; j<=height+radius; j+=interval) {
-            const vertice = new Vertice(radius, 'fill:red')
-            vertice.style = `left:${i-radius}px;top:${j-radius}px`
-            grid.append(vertice)
-
-            // const svgElem = new SVG(radius*2, radius*2)
-            // const circleElem = new Circle(radius, radius, radius, 'fill:red')
-            // svgElem.classList.add("opacity-0")
-            // svgElem.classList.add("transition")
-            // svgElem.classList.add("hover:opacity-100")
-            // svgElem.append(circleElem)
-            // svgElem.style = `left:${i-radius-2}px;top:${j-radius-2}px`
-            // grid.append(svgElem)
+    for (let i = 0; i <= height + radius; i += interval) {
+        for (let j=0; j <= height + radius; j += interval) {
+            const vertexElem = vertex(radius, 'fill:red')
+            vertexElem.style = `left:${i - radius}px;top:${j - radius}px`
+            grid.append(vertexElem)
         }
     }
 }
 
-function setDrawTool() {
+function setDrawTool(strokeColor, stroke) {
     let selected = []
+    const grid = document.querySelector('#grid')
     grid.addEventListener('click', (e) => handleVerticeClick(e))
     
     function handleVerticeClick(e) {
         e.preventDefault()
-        if (e.target.closest('.vertice')) {
-            const verticeElem = e.target.closest('.vertice')
-            // const verticeBBox = verticeElem.getBBox()
-            // const verticeLeft = parseLength(verticeElem.style.left)+verticeBBox.width/2
-            // const verticeTop = parseLength(verticeElem.style.top)+verticeBBox.height/2
-            addToSelected(verticeElem)
+        if (e.target.closest('.vertex')) {
+            const vertexElem = e.target.closest('.vertex')
+            addToSelected(vertexElem, strokeColor, stroke)
             console.log(selected)
         }
     }
@@ -85,18 +80,18 @@ function setDrawTool() {
         return [svgLeft, svgTop]
     }
 
-    function addToSelected(verticeElem) {
+    function addToSelected(vertexElem, strokeColor, stroke) {
         if (selected.length == 0) {
-            verticeElem.classList.remove(...['opacity-0', 'transition', 'hover:opacity-100'])
-            selected.push(verticeElem)
+            vertexElem.classList.remove(...['opacity-0', 'transition', 'hover:opacity-100'])
+            selected.push(vertexElem)
         } else {
-            let startVertice = selected[0]
-            startVertice.classList.add(...['opacity-0', 'transition', 'hover:opacity-100'])
+            let startVertex = selected[0]
+            startVertex.classList.add(...['opacity-0', 'transition', 'hover:opacity-100'])
             let start = getSvgCoords(selected[0])
-            let end = getSvgCoords(verticeElem)
+            let end = getSvgCoords(vertexElem)
             console.log(start, end)
             if (start.toString() !== end.toString()) {
-                drawLine(start, end, 'black', 2)
+                drawLine(start, end, strokeColor, stroke)
             }
             selected = []
         }
@@ -109,31 +104,34 @@ function setDrawTool() {
         let width = Math.max(Math.abs(xDiff), strokeWidth)
         let height = Math.max(Math.abs(yDiff), strokeWidth)
 
-        const svgElem = new SVG(Math.max(strokeWidth,width), Math.max(strokeWidth,height))
+        const svgElem = svg(Math.max(strokeWidth,width), Math.max(strokeWidth,height))
         if (xDiff == 0) {
-            const newLine =  new Line(strokeWidth/2, 0, strokeWidth/2, height, 
+            const newLine =  line(strokeWidth/2, 0, strokeWidth/2, height, 
                 `stroke:${strokeColor};stroke-width:${strokeWidth}`
             )
             svgElem.append(newLine) 
             svgElem.style = `left:${Math.min(start[0],end[0])-strokeWidth/2}px;top:${Math.min(start[1],end[1])}px`
         } else if (yDiff == 0) {
-            const newLine =  new Line(0, strokeWidth/2, width, strokeWidth/2, 
+            const newLine =  line(0, strokeWidth/2, width, strokeWidth/2, 
                 `stroke:${strokeColor};stroke-width:${strokeWidth}`
             )
             svgElem.append(newLine) 
             svgElem.style = `left:${Math.min(start[0],end[0])}px;top:${Math.min(start[1],end[1])-strokeWidth/2}px`
         }else if (xDiff * yDiff > 0) {
-            const newLine =  new Line(0, 0, width, height, `stroke:${strokeColor};stroke-width:${strokeWidth}`)
+            const newLine =  line(0, 0, width, height, `stroke:${strokeColor};stroke-width:${strokeWidth}`)
             svgElem.append(newLine)
             svgElem.style = `left:${Math.min(start[0],end[0])}px;top:${Math.min(start[1],end[1])}px`
         } else {
-            const newLine =  new Line(0, height, width, 0, `stroke:${strokeColor};stroke-width:${strokeWidth}`)
+            const newLine =  line(0, height, width, 0, `stroke:${strokeColor};stroke-width:${strokeWidth}`)
             svgElem.append(newLine)
             svgElem.style = `left:${Math.min(start[0],end[0])}px;top:${Math.min(start[1],end[1])}px`
         }
-        
-        // console.log(svgElem)
+
+        svgElem.classList.add('line');
         grid.append(svgElem)
+
+        vertexList.push([start, end])
+        console.log(vertexList)
     }
 
 }
@@ -141,12 +139,19 @@ function setDrawTool() {
 function render(e) {
     e.preventDefault()
     const segInput = document.querySelector('#segment')
+    const strInput = document.querySelector('#stroke')
+    
     const segment = segInput.value
+    const stroke = strInput.value
+    const strokeColor = DEFAULT_STROKE_COLOR
+    console.log(segment, stroke)
+
     clearGrid()
     generateGridlines(segment)
     generateSelectors(segment)
-    setDrawTool()
+    setDrawTool(strokeColor, stroke)
 }
 
 generateGridlines(DEFAULT_SEGMENT)
 generateSelectors(DEFAULT_SEGMENT)
+setDrawTool(DEFAULT_STROKE_COLOR, DEFAULT_STROKE)

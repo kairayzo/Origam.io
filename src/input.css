@@ -6,4 +6,8 @@
     svg {
         @apply absolute;
     }
+
+    line {
+        @apply -m-1 p-1 hover:scale-150;
+    }
 }

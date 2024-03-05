@@ -10,12 +10,16 @@
 <body>
     <div class="flex h-screen">
         <div class="w-80" id="sidebar">
-            <form id="menu">
-                <div class="flex gap-1">
+            <form id="menu" class=" flex flex-col gap-2">
+                <div class="flex gap-2">
                     <label for="#segment">Segments</label>
-                    <input type="text" id="segment">
-                    <button type="submit">Save</button>
+                    <input type="number" id="segment">    
                 </div>
+                <div class="flex gap-2">
+                    <label for="#stroke">Line stroke</label>
+                    <input type="number" id="stroke">
+                </div>
+                <button type="submit">Save</button>
             </form>
         </div>
         <div class="grow bg-slate-100 flex" id="display">

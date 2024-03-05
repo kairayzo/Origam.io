@@ -2,6 +2,18 @@ svg {
   position: absolute
 }
 
+line {
+  margin: -0.25rem;
+  padding: 0.25rem
+}
+
+line:hover {
+  --tw-scale-x: 1.5;
+  --tw-scale-y: 1.5;
+  -webkit-transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
+          transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+}
+
 *, ::before, ::after {
   --tw-border-spacing-x: 0;
   --tw-border-spacing-y: 0;
@@ -188,14 +200,21 @@ svg {
           flex-grow: 1
 }
 
+.flex-col {
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+      -ms-flex-direction: column;
+          flex-direction: column
+}
+
 .justify-center {
   -webkit-box-pack: center;
       -ms-flex-pack: center;
           justify-content: center
 }
 
-.gap-1 {
-  gap: 0.25rem
+.gap-2 {
+  gap: 0.5rem
 }
 
 .self-center {
