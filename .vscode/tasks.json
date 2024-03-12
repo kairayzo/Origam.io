@@ -4,10 +4,6 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "echo",
-            "type": "shell",
-            "command": "echo Hello"
-        }, {
             "label": "watch",
             "type": "shell",
             "command": "npx tailwindcss -i ./src/input.css -o ./src/output.css --watch"

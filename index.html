@@ -4,7 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Origami Editor</title>
-    <script src="./index.js" type="module" defer></script>
+    <script src="./src/index.js" type="module" defer></script>
+    <script src="https://edemaine.github.io/fold/dist/fold.js"></script>
     <link href="./src/output.css" rel="stylesheet">
 </head>
 <body>
@@ -19,11 +20,22 @@
                     <label for="#stroke">Line stroke</label>
                     <input type="number" id="stroke">
                 </div>
+                <div class="flex gap-2">
+                    <label for="#gridline">Toggle gridlines</label>
+                    <input type="checkbox" id="gridline" checked>
+                </div>
+                <div class="flex gap-2">
+                    <label for="file">Import file</label>
+                    <input type="file" accept=".fold" id="file">
+                </div>
                 <button type="submit">Save</button>
             </form>
         </div>
-        <div class="grow bg-slate-100 flex" id="display">
-            <div class="bg-slate-200 w-[600px] h-[600px] self-center justify-center relative" id="grid" oncontextmenu="javascript:return false;">
+        <div class="bg-slate-100 flex grow justify-center items-center" id="display">
+            <div class="w-[600px] h-[600px] bg-slate-200 relative" id="interface">
+                <div class="w-[600px] h-[600px] absolute z-20" id="plane" oncontextmenu="javascript:return false;"></div>
+                <div class="w-[600px] h-[600px] absolute z-10" id="analysis" oncontextmenu="javascript:return false;"></div>
+                <div class="w-[600px] h-[600px] absolute z-0" id="grid" oncontextmenu="javascript:return false;"></div>
             </div>
         </div>
     </div>
