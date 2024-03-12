@@ -11,9 +11,11 @@ const FOLD = require('fold')
 const form = document.querySelector('#menu')
 const segInput = document.querySelector('#segment')
 const strInput = document.querySelector('#stroke')
+const clearFileBtn = document.querySelector('#clearfile')
 segInput.value = DEFAULT_SEGMENT
 strInput.value = DEFAULT_STROKE
 form.addEventListener('submit',(e) => handleSubmit(e))
+clearFileBtn.addEventListener('click', (e) => clearFile(e))
 
 function processData(data) {
     let vList = data.vertices_coords
@@ -52,7 +54,6 @@ async function handleSubmit(e) {
     const file = fileInput.files[0]
     if (file) {
         await loadFile(file)
-        fileInput.value = null
     }
 
     render()
@@ -62,6 +63,12 @@ function onReaderLoad(event, resolve){
     var obj = JSON.parse(event.target.result);
     processData(obj)
     resolve()
+}
+
+function clearFile(e) {
+    e.preventDefault()
+    const fileInput = document.querySelector('#file')
+    fileInput.value = null
 }
 
 async function loadFile(file) {
