@@ -11,7 +11,7 @@
 <body>
     <div class="flex h-screen">
         <div class="w-80" id="sidebar">
-            <form id="menu" class=" flex flex-col gap-2">
+            <form id="menu" class=" flex flex-col gap-2 p-2">
                 <div class="flex gap-2">
                     <label for="#segment">Segments</label>
                     <input type="number" id="segment">    
@@ -26,19 +26,90 @@
                 </div>
                 <label for="file">Import file</label>
                 <div class="flex gap-2">
-                    <input type="file" accept=".fold" id="file">
+                    <input type="file" accept=".fold, .json, .cp" id="file">
                     <button id="clearfile">Clear</button>
                 </div>
-                <button type="submit">Save</button>
+                <button type="button" id="export">Export</button>
+                <div class="flex gap-2">
+                    <button id="draw" disabled="true">Draw tool</button>
+                    <button id="bisector">Bisector tool</button>
+                </div>
             </form>
         </div>
         <div class="bg-slate-100 flex grow justify-center items-center" id="display">
-            <div class="w-[600px] h-[600px] bg-slate-200 relative" id="interface">
-                <div class="w-[600px] h-[600px] absolute z-20" id="plane" oncontextmenu="javascript:return false;"></div>
-                <div class="w-[600px] h-[600px] absolute z-10" id="analysis" oncontextmenu="javascript:return false;"></div>
-                <div class="w-[600px] h-[600px] absolute z-0" id="grid" oncontextmenu="javascript:return false;"></div>
+            <svg class="relative" id="interface" width="700" height="700" x="600" y ="0" viewBox="-50 -50 700 700" oncontextmenu="javascript:return false;">
+                <g id ="paper">
+                    <polygon points="0,0 0,600 600,600 600,0" fill="#e2e8f0" stroke-linejoin="round"></polygon>
+                </g>
+                <g id="grid"></g>
+                <g id="analysis"></g>
+                <g id="plane"></g>
+                <g id="screen">
+                    <polygon points="0,0 0,600 600,600 600,0" fill-opacity="0" stroke-linejoin="round"></polygon>
+                    <circle id="pointer" r="6" cx="0" cy="0" style="display: none; position:absolute; fill:red"></circle>
+                </g>
+                <g id="selectors"></g>
+                <g id="markers"></g>
+            </svg>
+            <div class="bg-slate-200 absolute right-0 top-0 p-2 flex gap-2"> 
+                <div class="text-base font-bold" id="displayX">x: 0</div>
+                <div class="text-base font-bold" id="displayY">y: 0</div>
             </div>
         </div>
     </div>
+    <div class="w-full h-full absolute left-0 top-0 z-50 hidden" id="overlay">
+        <div class = "h-full w-full absolute bg-black opacity-30" id="overlayBg"></div>
+        <form id ="exportForm" class="p-8 absolute left-[calc(50%-400px)] top-[calc(50%-300px)] w-[800px] h-[500px] bg-slate-100 rounded-xl flex gap-2" action="submit">
+            <img id="close" class="absolute w-10 h-10 p-2 right-0 top-0 cursor-pointer" src="./public/MaterialSymbolsCloseRounded.svg" alt="close button">
+            <div id="exportLeftCol" class="flex flex-col gap-2 basis-1/2">
+                <div class="flex gap-2">
+                    <label for="fileTitle">File name:</label>
+                    <input id="fileTitle" type="text" value="title">
+                </div>
+                <div class="flex gap-2">
+                    <label for="fileAuthor">File author:</label>
+                    <input id="fileAuthor" type="text" value="author">
+                </div>
+                <div class="flex gap-2">
+                    <label for="fileCreator">File creator:</label>
+                    <input id="fileCreator" type="text" value="creator">
+                </div>
+                <div class="flex gap-2">
+                    <label for="fileSpec">File specifications:</label>
+                    <input id="fileSpec" type="text" value="specs">
+                </div>
+                <legend>File classes: </legend>
+                <fieldset id="fileClasses">
+                    <div class="flex gap-2">
+                        <input id="singleModel" name="fileClasses" value="singleModel" type="checkbox">
+                        <label for="singleModel">Single Model</label>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="multiModel" name="fileClasses" value="multiModel" type="checkbox">
+                        <label for="multiModel">Multi Model</label>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="animation" name="fileClasses" value="animation" type="checkbox">
+                        <label for="animation">Animation</label>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="diagrams" name="fileClasses" value="diagrams" type="checkbox">
+                        <label for="diagrams">Diagrams</label>
+                    </div>
+                    <!-- <div class="flex gap-2">
+                        <input id="others" name="fileClasses" type="checkbox">
+                        <input id="othersInput" type="text">
+                    </div> -->
+                </fieldset>
+            </div>
+            <div id="exportRightCol" class="flex flex-col grow gap-2">
+                <div>Preview</div>
+                <div id="preview" class="w-[300px] h-[300px] border border-black"></div>
+                <button id="exportBtn" class="w-20">Export</button>
+            </div>
+        </form>
+
+    </div>
+
 </body>
 </html>

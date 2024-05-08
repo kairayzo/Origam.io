@@ -3,11 +3,23 @@
 @tailwind utilities;
 
 @layer base {
-    svg {
-        @apply absolute;
+    * {
+        @apply font-sans
     }
 
+    body {
+        @apply p-0 m-0
+    }
+
+    svg {
+        @apply absolute
+    }
+/* 
     line {
-        @apply -m-1 p-1 hover:scale-150;
+        @apply -m-2 p-2 ;
+    } */
+
+    .selector {
+        @apply hover:scale-150
     }
 }
