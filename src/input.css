@@ -22,4 +22,9 @@
     .selector {
         @apply hover:scale-150
     }
+
+    svg {
+        @apply w-full;
+        @apply h-full;
+    }
 }

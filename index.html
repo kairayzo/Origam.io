@@ -33,11 +33,32 @@
                 <div class="flex gap-2">
                     <button id="draw" disabled="true">Draw tool</button>
                     <button id="bisector">Bisector tool</button>
+                    <button id="delete">Delete tool</button>
+                </div>
+                <div class="flex gap-2">
+                    <label for="edgeType">Default edge type</label>
+                    <select id="edgeType" name="edgeType">
+                        <option value="M" selected>Mountain</option>
+                        <option value="V">Valley</option>
+                        <option value="U">Unassigned</option>
+                        <option value="F">Flat</option>
+                        <option value="B">Border</option>
+                    </select>
+                </div>
+                <div class="flex gap-2">
+                    <button id="print">Print obj</button>
+                    <button id="viewbox">Reset SVG position</button>
+                </div>
+                <div class="flex gap-2">
+                    <button id="save">Save</button>
+                    <button id="clearsave">Clear save</button>
                 </div>
             </form>
         </div>
-        <div class="bg-slate-100 flex grow justify-center items-center" id="display">
-            <svg class="relative" id="interface" width="700" height="700" x="600" y ="0" viewBox="-50 -50 700 700" oncontextmenu="javascript:return false;">
+        <div class="bg-slate-100 flex grow justify-center items-center relative" id="display">
+            <svg class="relative" id="interface" x="600" y ="0" viewBox="-50 -50 700 700" oncontextmenu="javascript:return false;"
+            preserveAspectRatio="xMinYMin meet"
+            >
                 <g id ="paper">
                     <polygon points="0,0 0,600 600,600 600,0" fill="#e2e8f0" stroke-linejoin="round"></polygon>
                 </g>

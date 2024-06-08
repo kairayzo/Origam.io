@@ -1,4 +1,4 @@
-import { vertexObj, edgeObj, assignObj, FOLD } from "./index.js"
+import { vertexObj, edgeObj, assignObj, FOLD} from "./index.js"
 
 function initialiseExportForm() {
     let verticesCoords = []

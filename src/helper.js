@@ -35,11 +35,15 @@ export function parseLength(str) {
     let parsedStr = str.replace(/\D\-/g, "")
     return parseFloat(parsedStr)
 }
+
+
+// Mitigate of floating point errors
+export function exact(number) {
+    return parseFloat(parseFloat(number).toPrecision(12))
+}
  // Empty out the children of an element
 export function clearElem(elem) {
     elem.innerHTML = ''
-    let newElem = elem.cloneNode(true)
-    elem.parentNode.replaceChild(newElem, elem)
 }
 
 //removes all event listeners from element
@@ -60,6 +64,7 @@ export const plus = (a, b) => [a[0] + b[0], a[1] + b[1]]
 export const grad = (x1, y1, x2, y2) => (y2 - y1)/(x2 - x1)
 export const within = (a, x, y) => x < y ? (a > x && a < y) : (a > y && a < x)
 export const ontop = (a, x, y) => x < y ? (a >= x && a <= y) : (a >= y && a <= x)
+
 /*
 Geometry functions
 */
@@ -85,18 +90,23 @@ export function closest(x1, y1, x2, y2, coord) {
 export function centerPt(a, b) {
     let x = a[0] + (b[0] - a[0]) / 2
     let y = a[1] + (b[1] - a[1]) / 2
-    return [x, y]
+    return [exact(x), exact(y)]
 }
 
 // determines if coord is on line
-export function onLine(x1, y1, x2, y2, coord) {
+export function onLine(line, coord) {
+    let x1 = line[0][0]
+    let y1 = line[0][1]
+    let x2 = line[1][0]
+    let y2 = line[1][1]
+
     let gradient = grad(x1, y1, x2, y2)
     if  (gradient == Infinity) {
-        return equalDist(x1, coord[0])
+        return equalVal(x1, coord[0])
     } else if (gradient == 0) {
-        return equalDist(y1, coord[1])
+        return equalVal(y1, coord[1])
     } else {
-        return equalDist((coord[0] - x1) * grad(x1, y1, x2, y2) + y1, coord[1])
+        return equalVal((coord[0] - x1) * grad(x1, y1, x2, y2) + y1, coord[1])
     }
 }
 
@@ -112,22 +122,25 @@ export function intersect(line1, line2) {
     if (gradient1 == Infinity || gradient1 == -Infinity) {
         let x = line1[0][0]
         let y = line2[0][1] + gradient2 * (x - line2[0][0])
-        return [x, y]
+        return [exact(x), exact(y)]
     }
     if (gradient2 == Infinity || gradient2 == -Infinity) {
         let x = line2[0][0]
         let y = line1[0][1] + gradient1 * (x - line1[0][0])
-        return [x, y]
+        return [exact(x), exact(y)]
     }
     let yIntercept1 = line1[0][1] - gradient1 * line1[0][0]
     let yIntercept2 = line2[0][1] - gradient2 * line2[0][0]
     let x = (yIntercept2 - yIntercept1) / (gradient1 - gradient2)
     let y = gradient1 * x + yIntercept1
-    return [x, y]
+    return [exact(x), exact(y)]
 }
 
 // determine if two values are equal with threshold difference
-export function equalDist(x1, x2) {
+export function equalVal(x1, x2) {
+    if (x1 == Infinity || x2 == Infinity || x1 == -Infinity || x2 == -Infinity) {
+        return x1 == x2;
+    }
     return Math.abs(x1 - x2) <= 0.01
 }
 
