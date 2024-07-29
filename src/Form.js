@@ -195,9 +195,6 @@ function initialiseForm() {
         console.log(vertexObj, edgeObj, assignObj)
         console.log(Object.keys(vertexObj).length, Object.keys(edgeObj).length, Object.keys(assignObj).length)
     }
-
-    
-
 }
 
 

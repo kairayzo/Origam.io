@@ -178,7 +178,6 @@ export function lineGrad(a, gradient, gradientDir=undefined) {
         let xIntercept = - yIntercept / gradient
         let rightIntercept = yIntercept + envVar.width * gradient
         let topIntercept = xIntercept + envVar.height / gradient
-        // console.log(yIntercept, xIntercept, rightIntercept, topIntercept)
         let intercepts = [[0, exact(yIntercept)], [exact(xIntercept), 0], [envVar.width, exact(rightIntercept)], [exact(topIntercept), envVar.height]]
         let coords = []
         for (let i of intercepts) {
@@ -190,7 +189,6 @@ export function lineGrad(a, gradient, gradientDir=undefined) {
         coord2 = coords[1]
     }
     if (gradientDir != undefined) {
-        // console.log(gradientDir, grad2(a, coord1), grad2(a, coord2))
         if (gradientDir > Math.PI) {
             gradientDir -= 2 * Math.PI
         }
@@ -231,20 +229,8 @@ export function bisectAngle(a, b, c) {
     if (bisectGrad > Math.PI) {
         bisectGrad -= Math.PI * 2
     }
-    // if (gradient1 == Math.PI) {
-    //     gradient1 *= gradient2 < 0 ? -1 : 1
-    // } else if (gradient2 == Math.PI) {
-    //     gradient2 *= gradient1 < 0 ? -1 : 1
-    // }
-    // let bisectGrad = (gradient1 + gradient2) / 2
-    // if (gradient1 == -gradient2) {
-    //     if (Math.abs(gradient1) > 0.5 * Math.PI) {
-    //         bisectGrad = Math.PI
-    //     }
-    // }
 
     let resGradient = exact(Math.tan(bisectGrad))
-    // console.log(gradient1, gradient2, bisectGrad, resGradient)
     return lineGrad(b, resGradient, bisectGrad)
 }
 
@@ -261,7 +247,6 @@ export function bisectLines(a, b, c, d) {
 
     let resGradient1 = exact(Math.tan((gradient1 + gradient2) / 2))
     let resGradient2 = exact(-1 / resGradient1)
-    // console.log(gradient1, gradient2, resGradient1, resGradient2)
     let intersectPt = intersect([a,b],[c,d], true)
     if (intersectPt) {
         return [lineGrad(intersectPt, resGradient1), lineGrad(intersectPt, resGradient2)]

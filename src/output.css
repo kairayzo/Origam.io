@@ -3,31 +3,24 @@
 }
 
 body {
-  margin: 0px;
-  padding: 0px;
+  padding: 0;
+  margin: 0;
 }
 
 svg {
   position: absolute;
 }
 
-/* 
-    line {
-        @apply -m-2 p-2 ;
-    } */
-
 .marker {
   position: absolute;
   opacity: 0.3;
   pointer-events: none;
-  /* @apply absolute block opacity-30 pointer-events-none; */
 }
 
 .selector {
   position: absolute;
   opacity: 0.3;
   cursor: pointer;
-  /* @apply opacity-30 hover:opacity-100 cursor-pointer; */
 }
 
 .selector:hover {

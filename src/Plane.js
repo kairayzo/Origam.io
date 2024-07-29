@@ -576,14 +576,7 @@ function setDrawTool() {
     const selectors = document.querySelector('#selectors')
     
     let selectedPointer = []
-    // let mouseDown = false
-    // let startCoord, endCoord
-    let currLine = [[0,0],[0,0]] 
-    let currDist = Infinity
-    
-    // screen.addEventListener('mousedown', (e)=>handleMouseDown(e))
-    // screen.addEventListener('mousemove', (e)=>handleMouseMove(e))
-    // screen.addEventListener('mouseup', (e)=>handleMouseUp(e))
+
     screen.addEventListener('mousemove', e=>snapPointer(e))
     screen.addEventListener('mouseleave', e=>removePointer(e))
     screen.addEventListener('click', e=>handlePointerClick(e))
@@ -617,30 +610,9 @@ function setDrawTool() {
             coordEdgeMap[closestCoord] = [[x1, y1], [x2, y2]]
         }
         let minDistToLine = Math.min.apply(null, Object.keys(distEdgeMap))
-        let newLine = coordEdgeMap[distEdgeMap[minDistToLine]]
 
         if (minDistToLine < 10) {
-            // if (equalLine(currLine, newLine)) {
-            //     // if new cursor position is on the same line
-            //     // snap to closest coord
-            //     cursorCoord = distEdgeMap[minDistToLine]
-            // } else {
-            //     // if new cursor position is on a different line
-            //     // snap to closest coord if distance is smaller than curr dist
-            //     if (minDistToLine < currDist - 3) {
-            //         cursorCoord = distEdgeMap[minDistToLine]
-            //         currLine = newLine
-            //         currDist = minDistToLine
-            //     }
-            // }
-            
             cursorCoord = distEdgeMap[minDistToLine]
-            
-            // if ((!equalLine(currLine, newLine) && minDistToLine < currDist - 3) || equalLine(currLine, newLine)) {
-            //     cursorCoord = distLineMap[minDistToLine]
-            //     currLine = newLine
-            //     currDist = minDistToLine
-            // }
         }
 
         // find min distance to any grid vertex or edge vertex
@@ -679,65 +651,6 @@ function setDrawTool() {
         }
     }
 
-    // function snapCursor(pointerPosition) {
-    //     let cursorCoord = [pointerPosition.x, envVar.height - pointerPosition.y]
-    //     // round pointer position to 2 decimal places
-    //     let x = pointerPosition.x
-    //     let y = envVar.height - pointerPosition.y
-
-    //     // find min distance to any edge
-    //     // find coordinates and edge of min distance
-    //     let distLineMap = {}
-    //     let coordLineMap = {}
-    //     for (let lineElem of plane.children) {
-    //         let x1 = lineElem.x1.baseVal.value
-    //         let x2 = lineElem.x2.baseVal.value
-    //         let y1 = envVar.height - lineElem.y1.baseVal.value
-    //         let y2 = envVar.height - lineElem.y2.baseVal.value
-    //         let coord = closest(x1, y1, x2, y2, [x, y])
-    //         distLineMap[distTo(coord, [x, y])] = coord
-    //         coordLineMap[coord] = [[x1, y1], [x2, y2]]
-    //     }
-    //     let minDistToLine = Math.min.apply(null, Object.keys(distLineMap))
-    //     let newLine = coordLineMap[distLineMap[minDistToLine]]
-    //     if (minDistToLine < 10) {
-    //         if (equalLine(currLine, newLine)) {
-    //             // if new cursor position is on the same line
-    //             cursorCoord = distLineMap[minDistToLine]
-    //         } else {
-    //             // if new cursor position is on a different line
-    //             if (minDistToLine < currDist - 3) {
-    //                 cursorCoord = distLineMap[minDistToLine]
-    //                 currLine = newLine
-    //                 currDist = minDistToLine
-    //             }
-    //         }
-    //         cursorCoord = distLineMap[minDistToLine]
-    //     }
-
-    //     // find min distance to any grid vertex or line vertex
-    //     let distPtMap = {}
-    //     for (let gridVertex of envVar.gridVertices) {
-    //         distPtMap[distTo(cursorCoord, gridVertex)] = gridVertex
-    //     }
-    //     for (let vertex of Object.values(vertexObj)) {
-    //         let scaledVertex = scaleUpCoords(vertex)
-    //         distPtMap[distTo(cursorCoord, scaledVertex)] = scaledVertex
-    //     }
-    //     let minDistToVert = Math.min.apply(null, Object.keys(distPtMap))
-    //     let verticeCoord = distPtMap[minDistToVert]
-
-    //     // snap to closest vertex if vertex is on any edge
-    //     if (minDistToVert < 5) {
-    //         cursorCoord = verticeCoord
-    //     }
-
-    //     // let newX = cursorCoord[0]
-    //     // let newY = envVar.height - cursorCoord[1]
-
-    //     return cursorCoord
-    // }
-
     function removePointer(e) {
         e.preventDefault();
         pointer.style.display = 'none'
@@ -749,6 +662,7 @@ function setDrawTool() {
         if (ontop(pointerCoord[0], 0, envVar.width) && ontop(pointerCoord[1], 0, envVar.height)) {
             selectedPointer.push(pointerCoord)
             if (selectedPointer.length >= 2) {
+                addLine(selectedPointer[0], selectedPointer[1])
                 clearChildren(selectors)
                 drawPattern()
                 overwriteHistory()
@@ -759,59 +673,6 @@ function setDrawTool() {
             }
         }
     }
-
-    // function handleMouseDown(e) {
-    //     e.preventDefault()
-    //     mouseDown = true
-    //     let pointerCoord = getPointFromEvent(e)
-    //     let snappedCoord = snapCursor(pointerCoord)
-    //     if (ontop(snappedCoord[0], 0, envVar.width) && ontop(snappedCoord[1], 0, envVar.height)) {
-    //         startCoord = snappedCoord
-    //     }
-        
-    //     if (pointer.style.display == 'block') {
-    //         selectedPointer.push(pointerCoord)
-    //         if (selectedPointer.length >= 2) {
-    //             for (let marker of document.querySelectorAll('.marker')) {
-    //                 marker.remove()
-    //             }
-    //             addLine(selectedPointer[0], selectedPointer[1])
-    //             drawPattern()
-    //             overwriteHistory()
-    //             selectedPointer = []
-    //         } else {
-    //             addVertMarker(pointerCoord)
-    //         }
-    //     }
-    // }
-
-    // function handleMouseMove(e) {
-    //     e.preventDefault()
-    //     if (mouseDown && startCoord) {
-    //         let pointerCoord = getPointFromEvent(e)
-    //         endCoord = snapCursor(pointerCoord)
-    //         if (!equalCoords(startCoord, endCoord)) {
-    //             clearChildren(markers)
-    //             addLineMarker(startCoord, endCoord)
-    //         }
-    //     }
-    // }
-
-    // function handleMouseUp(e) {
-    //     e.preventDefault()
-    //     if (startCoord && endCoord && !equalCoords(startCoord, endCoord)) {
-    //         clearChildren(markers)
-    //         if (ontop(startCoord[0], 0, envVar.width) && ontop(startCoord[1], 0, envVar.height) && ontop(endCoord[0], 0, envVar.width) && ontop(endCoord[1], 0, envVar.height)) {
-    //             console.log(startCoord, endCoord)
-    //             addLine(startCoord, endCoord)
-    //             drawPattern()
-    //             overwriteHistory()
-    //         }
-    //     }
-    //     mouseDown = false
-    //     startCoord = undefined
-    //     endCoord = undefined
-    // }
 }
 
 function setBisectorTool() {
@@ -881,14 +742,6 @@ function setBisectorTool() {
                 break
         }
     }
-    
-    // function addLineSelector(start, end, definedVertices=[]) {
-    //     const newLine = line(start[0], envVar.height - start[1], end[0], envVar.height - end[1], `stroke:green; stroke-width:${envVar.strokeWidth * 2}; stroke-dasharray: 8 2`)
-
-    //     newLine.classList.add('selector')
-    //     newLine.addEventListener('click', e => handleLineSelectorClick(e, definedVertices))
-    //     selectors.append(newLine);
-    // }
 
     function handleLineSelectorClick(e, definedVertices) {
         e.preventDefault()
@@ -955,19 +808,6 @@ function setBisectorTool() {
                     confirmLine(definedVertices[0], definedVertices[1])
                     break
             }
-
-            
-            // let x1 = lineElem.x1.baseVal.value
-            // let x2 = lineElem.x2.baseVal.value
-            // let y1 = envVar.height - lineElem.y1.baseVal.value
-            // let y2 = envVar.height - lineElem.y2.baseVal.value
-            // addLine([x1, y1], [x2, y2])
-            // drawPattern()
-            // overwriteHistory()
-            // clearChildren(markers)
-            // clearChildren(selectors)
-            // vertexList.length = 0
-            // generateVertSelectors()
         }
     }
     
@@ -1055,39 +895,6 @@ function setCutTool() {
                 break
         }
     }
-    
-    // function addLineSelector(start, end) {
-    //     const newLine = line(start[0], envVar.height - start[1], end[0], envVar.height - end[1], `position:absolute;stroke:${envVar.assignmentColor[envVar.edgeType]};stroke-width:${envVar.strokeWidth * 2}; z-index: 1;  stroke-dasharray: 8 2`)
-    //     newLine.classList.add('selector')
-    //     newLine.addEventListener('click', (e) => handleLineSelectorClick(e))
-    //     selectors.append(newLine);
-    // }
-
-    // function handleLineSelectorClick(e) {
-    //     e.preventDefault()
-    //     if (e.target) {
-    //         const lineElem = e.target
-    //         let x1 = lineElem.x1.baseVal.value
-    //         let x2 = lineElem.x2.baseVal.value
-    //         let y1 = envVar.height - lineElem.y1.baseVal.value
-    //         let y2 = envVar.height - lineElem.y2.baseVal.value
-    //         addLine([x1, y1], [x2, y2])
-    //         drawPattern()
-    //         overwriteHistory()
-    //         clearChildren(markers)
-    //         clearChildren(selectors)
-    //         vertexList.length = 0
-    //         generateVertSelectors()
-    //     }
-    // }
-
-    // function addLineSelector(start, end, definedVertices=[]) {
-    //     const newLine = line(start[0], envVar.height - start[1], end[0], envVar.height - end[1], `stroke-width:${envVar.strokeWidth * 2}; stroke:green; stroke-dasharray: 8 2`)
-
-    //     newLine.classList.add('selector')
-    //     newLine.addEventListener('click', (e) => handleLineSelectorClick(e, definedVertices))
-    //     selectors.append(newLine);
-    // }
 
     function handleLineSelectorClick(e, definedVertices) {
         e.preventDefault()
@@ -1153,17 +960,6 @@ function setCutTool() {
                     confirmLine(definedVertices[0], definedVertices[1])
                     break
             }
-            // let x1 = lineElem.x1.baseVal.value
-            // let x2 = lineElem.x2.baseVal.value
-            // let y1 = envVar.height - lineElem.y1.baseVal.value
-            // let y2 = envVar.height - lineElem.y2.baseVal.value
-            // addLine([x1, y1], [x2, y2])
-            // drawPattern()
-            // overwriteHistory()
-            // clearChildren(markers)
-            // clearChildren(selectors)
-            // vertexList.length = 0
-            // generateVertSelectors()
         }
     }
     
