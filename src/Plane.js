@@ -591,6 +591,7 @@ function setDrawTool() {
 
     // cleanup code on unmount
     return () => {
+        const pointer = document.querySelector('#pointer')
         pointer.style.display = 'none'
     }
 
@@ -954,6 +955,8 @@ function setBisectorTool() {
                     confirmLine(definedVertices[0], definedVertices[1])
                     break
             }
+
+            
             // let x1 = lineElem.x1.baseVal.value
             // let x2 = lineElem.x2.baseVal.value
             // let y1 = envVar.height - lineElem.y1.baseVal.value
@@ -1100,6 +1103,8 @@ function setCutTool() {
                     x2 = lineElem.x2.baseVal.value
                     y1 = envVar.height - lineElem.y1.baseVal.value
                     y2 = envVar.height - lineElem.y2.baseVal.value
+                    addLineMarker([x1,y1],[x2,y2], true)
+
                     for (let edgeVal of Object.values(edgeObj)) {
                         let lineStart = vertexObj[edgeVal[0]]
                         let lineEnd = vertexObj[edgeVal[1]]
@@ -1124,6 +1129,8 @@ function setCutTool() {
                     x2 = lineElem.x2.baseVal.value
                     y1 = envVar.height - lineElem.y1.baseVal.value
                     y2 = envVar.height - lineElem.y2.baseVal.value
+                    addLineMarker([x1,y1],[x2,y2], true)
+
                     for (let edgeVal of Object.values(edgeObj)) {
                         let lineStart = vertexObj[edgeVal[0]]
                         let lineEnd = vertexObj[edgeVal[1]]
@@ -1198,6 +1205,7 @@ function setDeleteTool() {
             line.classList.remove('selector')
             line.style.strokeWidth = envVar.strokeWidth
         })
+        const screen = document.querySelector('#screen')
         screen.style.display = 'block'
         drawPattern()
     }

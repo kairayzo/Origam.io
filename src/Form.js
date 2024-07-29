@@ -182,11 +182,11 @@ function initialiseForm() {
         pointer.style.fill = edgeColour
         let markers = document.querySelector('#markers')
         for (let marker of markers.children) {
-            marker.style.fill = edgeColour
-        }
-        const selectors = document.querySelector('#selectors')
-        for (let selector of selectors.children) {
-            selector.style.fill = edgeColour
+            if (marker.tagName == 'circle') {
+                marker.style.fill = edgeColour
+            } else if (marker.tagName == 'line') {
+                marker.style.stroke = edgeColour
+            }
         }
     }
 
