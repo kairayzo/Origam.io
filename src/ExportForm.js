@@ -1,4 +1,5 @@
 import { vertexObj, edgeObj, assignObj, FOLD} from "./index.js"
+import { svg } from "./SVG.js"
 
 function initialiseExportForm() {
     let verticesCoords = []
@@ -59,9 +60,10 @@ function handleExport(e) {
 function loadPreview() {
     let previewElem = document.querySelector('#preview')
     let plane = document.querySelector('#plane')
-    let previewSvg = plane.cloneNode(true)
+    let previewGroup = plane.cloneNode(true)
+    let previewSvg = svg(300, 300)
     previewSvg.setAttribute('viewBox', '0 0 600 600')
-    previewSvg.style = 'width: 300px; height: 300px'
+    previewSvg.appendChild(previewGroup)
     previewElem.innerHTML = ''
     previewElem.append(previewSvg)
 }

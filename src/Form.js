@@ -1,7 +1,7 @@
 import { vertexObj, edgeObj, assignObj, envVar } from "./index.js"
 import { generateId } from "./helper.js"
 import { generateGrid, toggleGrid } from "./Grid.js"
-import { generatePlane, resetScreen, setBisectorTool, setDrawTool, setDeleteTool, resetViewbox, drawPattern, enableGestures } from "./Plane.js"
+import { resetScreen, setDrawTool, resetViewbox, drawPattern} from "./Plane.js"
 import { initialiseExportForm } from "./ExportForm.js"
 import { deleteHistory, overwriteHistory, saveHistory } from "./History.js"
 
@@ -13,7 +13,9 @@ function initialiseForm() {
     const clearFileBtn = document.querySelector('#clearfile')
     const drawToolBtn = document.querySelector('#draw')
     const bisectorToolBtn = document.querySelector('#bisector')
+    const cutToolBtn = document.querySelector('#cut')
     const deleteToolBtn = document.querySelector('#delete')
+    const suggestToolBtn = document.querySelector('#suggest')
     const edgeTypeInput = document.querySelector('#edgeType')
     const printBtn = document.querySelector('#print')
     const viewboxBtn = document.querySelector('#viewbox')
@@ -22,22 +24,24 @@ function initialiseForm() {
     
     segInput.value = envVar.segment
     strInput.value = envVar.strokeWidth
-    fileInput.value = envVar.file
+    fileInput.value = envVar.activeFile
     edgeTypeInput.value = envVar.edgeType
     
     segInput.addEventListener('change', render)
     strInput.addEventListener('change', render)
     gridInput.addEventListener('change', render)
-    fileInput.addEventListener('change', (e)=>handleSubmit(e))
-    clearFileBtn.addEventListener('click', (e)=>clearFile(e))
-    segInput.addEventListener('invalid', (e)=>invalidSegment(e))
-    strInput.addEventListener('invalid', (e)=>invalidStroke(e))
-    drawToolBtn.addEventListener('click', handleDrawSelect)
-    bisectorToolBtn.addEventListener('click', handleBisectorSelect)
-    deleteToolBtn.addEventListener('click', handleDeleteSelect)
-    edgeTypeInput.addEventListener('change', (e)=>handleEdgeTypeChange(e))
-    printBtn.addEventListener('click', (e) => {e.preventDefault(); console.log(vertexObj, edgeObj, assignObj)})
-    viewboxBtn.addEventListener('click', (e) => resetViewbox(e))
+    fileInput.addEventListener('change', e=>handleSubmit(e))
+    clearFileBtn.addEventListener('click', e=>clearFile(e))
+    segInput.addEventListener('invalid',e=>invalidSegment(e))
+    strInput.addEventListener('invalid', e=>invalidStroke(e))
+    drawToolBtn.addEventListener('click', e => handleToolSelect(e))
+    bisectorToolBtn.addEventListener('click', e=>handleToolSelect(e))
+    cutToolBtn.addEventListener('click', e=> handleToolSelect(e))
+    deleteToolBtn.addEventListener('click', e=>handleToolSelect(e))
+    suggestToolBtn.addEventListener('click', e=>handleToolSelect(e))
+    edgeTypeInput.addEventListener('change', e=>handleEdgeTypeChange(e))
+    printBtn.addEventListener('click', e =>printObjects(e))
+    viewboxBtn.addEventListener('click', e => resetViewbox(e))
     saveBtn.addEventListener('click', saveHistory)
     clearSaveBtn.addEventListener('click', deleteHistory)
     initialiseExportForm()
@@ -46,7 +50,7 @@ function initialiseForm() {
         e.preventDefault()
         const fileInput = document.querySelector('#file')
         fileInput.value = null
-        envVar.file = ''
+        envVar.activeFile = ''
         handleSubmit(e)
     }
 
@@ -66,8 +70,6 @@ function initialiseForm() {
         toggleGrid()
         resetScreen()
         drawPattern()
-        overwriteHistory()
-        setDrawTool()
     }
 
     async function handleSubmit(e) {
@@ -75,11 +77,12 @@ function initialiseForm() {
         const fileInput = document.querySelector('#file')
         clearObj()
         const file = fileInput.files[0]
-        envVar.file = file
+        envVar.activeFile = file
         if (file) {
             await loadFile(file)
         }
         render()
+        overwriteHistory()
         
         function clearObj() {
             for (let obj of [vertexObj, edgeObj, assignObj]) {
@@ -140,42 +143,60 @@ function initialiseForm() {
         window.alert('Invalid input: must be a number')
     }
 
-    function handleDrawSelect() {
-        const drawToolBtn = document.querySelector('#draw')
-        const bisectorToolBtn = document.querySelector('#bisector')
-        drawToolBtn.disabled = true
-        bisectorToolBtn.disabled = false
-        deleteToolBtn.disabled = false
-        resetScreen()
-        setDrawTool()
-    }
-
-    function handleBisectorSelect() {
-        // const drawToolBtn = document.querySelector('#draw')
-        // const bisectorToolBtn = document.querySelector('#bisector')
-        drawToolBtn.disabled = false
-        bisectorToolBtn.disabled = true
-        deleteToolBtn.disabled = false
-
-        resetScreen()
-        setBisectorTool()
-    }
-
-    function handleDeleteSelect() {
+    function disableToolBtn(toolElem) {
         drawToolBtn.disabled = false
         bisectorToolBtn.disabled = false
-        deleteToolBtn.disabled = true
+        cutToolBtn.disabled = false
+        deleteToolBtn.disabled = false
+        suggestToolBtn.disabled = false
+        toolElem.disabled = true
+    }
 
+    function handleToolSelect(e) {
+        disableToolBtn(e.target)
+        switch(e.target) {
+            case drawToolBtn: 
+                envVar.activeTool = 'draw'
+                break
+            case bisectorToolBtn:
+                envVar.activeTool = 'bisector'
+                break
+            case cutToolBtn:
+                envVar.activeTool = 'cut'
+                break
+            case deleteToolBtn:
+                envVar.activeTool = 'delete'
+                break
+            case suggestToolBtn:
+                envVar.activeTool = 'suggest'
+                break
+        }
         resetScreen()
-        setDeleteTool()
     }
 
     function handleEdgeTypeChange(e) {
         e.preventDefault()
         envVar.edgeType = e.target.value
+        let edgeColour = envVar.assignmentColor[envVar.edgeType]
         const pointer = document.querySelector('#pointer')
-        pointer.style.fill = envVar.assignmentColor[envVar.edgeType]
+        pointer.style.fill = edgeColour
+        let markers = document.querySelector('#markers')
+        for (let marker of markers.children) {
+            marker.style.fill = edgeColour
+        }
+        const selectors = document.querySelector('#selectors')
+        for (let selector of selectors.children) {
+            selector.style.fill = edgeColour
+        }
     }
+
+    function printObjects(e) {
+        e.preventDefault()
+        console.log(vertexObj, edgeObj, assignObj)
+        console.log(Object.keys(vertexObj).length, Object.keys(edgeObj).length, Object.keys(assignObj).length)
+    }
+
+    
 
 }
 

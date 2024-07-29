@@ -19,12 +19,34 @@
         @apply -m-2 p-2 ;
     } */
 
-    .selector {
-        @apply hover:scale-150
+    .marker {
+        position: absolute;
+        opacity: 0.3;
+        pointer-events: none;
+        /* @apply absolute block opacity-30 pointer-events-none; */
     }
 
-    svg {
-        @apply w-full;
-        @apply h-full;
+    .selector {
+        position: absolute;
+        opacity: 0.3;
+        cursor: pointer;
+        /* @apply opacity-30 hover:opacity-100 cursor-pointer; */
+    }
+
+    .selector:hover {
+        opacity: 1;
+    }
+
+    circle.marker, circle.selector{
+        z-index: 2;
+    }
+
+    circle.marker, line.selector {
+        z-index: 1;
+    }
+
+    .with-border {
+        stroke: white;
+        stroke-width: 3px;
     }
 }

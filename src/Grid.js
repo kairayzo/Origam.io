@@ -1,21 +1,19 @@
 import { line } from "./Line.js"
 import { envVar } from "./index.js"
-import { clearElem } from "./helper.js"
+import { clearChildren } from "./helper.js"
 
 function generateGrid() {
 
     const grid = document.querySelector('#grid')
-    clearElem(grid)
+    let segment = envVar.segment
+    let height = envVar.height
+    let width = envVar.width
+    let interval = Math.ceil(height/segment)
+    clearChildren(grid)
     generateGridlines()
     generateGridVertices()
     
     function generateGridlines() {
-        const grid = document.querySelector('#grid')
-        let segment = envVar.segment
-        let height = envVar.height
-        let width = envVar.width
-        let interval = Math.ceil(height/segment)
-
         for (let i = interval; i < width; i += interval) {
             const lineElemY = line(i, 0, i, height, 'stroke:white;stroke-width:2')
             grid.append(lineElemY)
@@ -27,17 +25,13 @@ function generateGrid() {
     }
 
     function generateGridVertices() {
-        let segment = envVar.segment
-        let height = envVar.height
-        let width = envVar.width
-        let interval = Math.ceil(height/segment)
-        envVar.gridVertices = [];
-
+        let newGridVertices = []
         for (let i = 0; i <= width; i += interval) {
             for (let j = 0; j <= height; j += interval) {
-                envVar.gridVertices.push([i, j])
+                newGridVertices.push([i, j])
             }
         }
+        envVar.gridVertices = newGridVertices;
     }
 }
 
