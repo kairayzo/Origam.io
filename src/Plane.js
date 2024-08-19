@@ -13,18 +13,19 @@ function generatePlane() {
     }
     drawPattern()
 
-    function setBorder() {
-        const width = envVar.width
-        const height = envVar.height
-        let borderLines = [
-            [[0, 0], [width, 0]],
-            [[0, 0], [0, height]],
-            [[width, 0], [width, height]],
-            [[0,height],[width,height]]
-        ]
-        for (let line of borderLines) {
-            addLine(line[0],line[1], 'B')
-        }
+}
+
+function setBorder() {
+    const width = envVar.width
+    const height = envVar.height
+    let borderLines = [
+        [[0, 0], [width, 0]],
+        [[0, 0], [0, height]],
+        [[width, 0], [width, height]],
+        [[0,height],[width,height]]
+    ]
+    for (let line of borderLines) {
+        addLine(line[0],line[1], 'B')
     }
 }
 
@@ -87,6 +88,7 @@ function enableShortcuts() {
     let spaceDown = false
     let ctrlDown = false
     let cursorCoord
+    
 
     window.addEventListener('keydown', function(e) {
         if (e.repeat) {
@@ -134,6 +136,9 @@ function enableShortcuts() {
         e2.clientY = e1.clientY
         if (e1.button === 0 && spaceDown) {
             svg.dispatchEvent(e2)
+        } else if (e1.button === 1) {
+            svg.dispatchEvent(e2)
+            svg.style.cursor = 'move'
         }
     })
     svg.addEventListener('mouseup', function (e1) {
@@ -142,6 +147,9 @@ function enableShortcuts() {
         e2.clientY = e1.clientY
         if (e1.button === 0 && spaceDown) {
             svg.dispatchEvent(e2)
+        } else if (e1.button === 1) {
+            svg.dispatchEvent(e2)
+            svg.style.cursor = 'default'
         }
     })
     
@@ -150,6 +158,13 @@ function enableShortcuts() {
     svg.addEventListener('mouseleave', onPointerUp) // Mouse gets out of the SVG area
     svg.addEventListener('mousemove', onPointerMove) // Mouse is moving
     svg.addEventListener('wheel', onScroll)
+
+    svg.addEventListener('pointerdown', onTouchDown)
+    svg.addEventListener('pointermove', onTouchMove)
+    svg.addEventListener('pointerup', onTouchUp)
+    svg.addEventListener('pointercancel', onTouchUp)
+    svg.addEventListener('pointerout', onTouchUp)
+    svg.addEventListener('pointerleave', onTouchUp)
 
     
     let isPointerDown = false
@@ -207,6 +222,44 @@ function enableShortcuts() {
         drawPattern()
         resetScreen()
     }
+
+    let touchEventCache = []
+    let prevDiff = -1
+
+    function onTouchDown(e) {
+        touchEventCache.push(e)
+    }
+
+    function onTouchMove(e) {
+        // update pointer event
+        let index = touchEventCache.findIndex(
+            (cachedEvent) => cachedEvent.pointerId === e.pointerId
+        )
+        touchEventCache[index] = e
+
+        // if two pointers are down, check for pinch gestures
+        if (touchEventCache.length == 2) {
+            // calculate the distance between the two pointers
+            let currDiff = Math.abs(touchEventCache[0].clientX - evCache[1].clientX)
+            if (prevDiff > 0) {
+                if (currDiff > prevDiff) {
+                    console.log('zooming in')
+                } else if (currDiff > prevDiff) {
+                    console.log('zooming out')
+                }
+            }
+            // cache the distance for the next move event
+            prevDiff = currDiff
+        }
+    }
+
+    function onTouchUp(e) {
+        // remove touch event
+        let index = touchEventCache.findIndex(
+            (cachedEvent) => cachedEvent.pointerId === e.pointerId
+        )
+        touchEventCache.splice(index, 1)
+    }
 }
 
 function resetScreen() {
@@ -260,6 +313,7 @@ function drawPattern() {
                 deleteLineSeg(lineId)
                 lineElem.remove()
                 overwriteHistory()
+                resetActiveTool()
             }
         }
     }
@@ -494,6 +548,10 @@ function deleteLineSeg(lineId) {
 // merge existing edges that contain a given vertex if they have the same gradient and have the same assignment
 function joinLineSeg(vertId) {
     let linesWithPt = Object.keys(edgeObj).filter(lineId => edgeObj[lineId].includes(vertId))
+    if (linesWithPt.length == 0) {
+        delete vertexObj[vertId]
+        return
+    }
     if (linesWithPt.length == 2) {
         let line1Id = linesWithPt[0]
         let start1Id = edgeObj[line1Id][0]
@@ -1043,7 +1101,7 @@ function setSuggestTool() {
     function suggestVertex(e) {
         e.preventDefault();
         if (e.target) {
-            let lineAngles = [], lineAssigns = []
+            let lineAngles = [], lineAssigns = [], lineArr = []
             let vertexElem = e.target
             let vertexCoord = getElemCoord(vertexElem)
             let sVertexCoord = scaleDownCoords(vertexCoord)
@@ -1061,6 +1119,7 @@ function setSuggestTool() {
                     let lineAssign = assignObj[lineId]
                     lineAngles.push(lineAngle)
                     lineAssigns.push(lineAssign)
+                    lineArr.push([lineAngle, lineAssign])
                 }
             }
 
@@ -1087,6 +1146,7 @@ function setSuggestTool() {
 
             // sort edges according to line angle wrt selected vertex
             lineAngles.sort((a, b) => a - b)
+            lineArr.sort((a, b) => a[0] - b[0])
 
             let prevAngle = lineAngles[lineAngles.length - 1]
             let angleArr = []
@@ -1127,10 +1187,16 @@ function setSuggestTool() {
                         angleIdx += lineAngles.length
                     }
                     let newLineAngle = lineAngles[angleIdx] + angleSplit
-
+                    let newLineArr = lineArr.toSpliced(angleIdx + 1, 0, [newLineAngle, suggestedAssign])
+                    if (!bigLittleBig(newLineArr)) {
+                        continue;
+                    }
+                    
                     // calculate coordinates of new line with newLineAngle
                     let newLine = lineGrad(vertexCoord, exact(Math.tan(newLineAngle)), newLineAngle)
+                    
 
+                    
                     // find all intersections of full line and restrict new line to closest intersection
                     let intersectionArr = Object.values(edgeObj).map((idPair) => {
                         let start = scaleUpCoords(vertexObj[idPair[0]])
@@ -1149,6 +1215,63 @@ function setSuggestTool() {
                     }
                 }
             }
+        }
+
+        function bigLittleBig(lineArr) {
+            let angleArr = []
+            let prevIdx = lineArr.length - 1
+            for (let i = 0; i < lineArr.length; i++) {
+                let currAngle = lineArr[i][0]
+                let prevAngle = lineArr[prevIdx][0]
+                let angleBetween = currAngle - prevAngle
+                if (angleBetween < 0) {
+                    angleBetween += Math.PI * 2
+                }
+                angleArr.push([angleBetween, lineArr[prevIdx][1], lineArr[i][1]])
+                // console.log(JSON.stringify(angleArr))
+                prevIdx = (prevIdx + 1) % lineArr.length
+                prevAngle = currAngle
+            }
+
+            // console.log(JSON.stringify(angleArr))
+            while (angleArr.length > 2) {
+                // console.log(angleArr.length, JSON.stringify(angleArr))
+                let minAngleIdx = -1, minAngle = Math.PI * 2
+                for (let i = 0; i < angleArr.length; i++) {
+                    if (equalVal(angleArr[i][0], minAngle)) {
+                        if ((angleArr[i][1] == 'M' && angleArr[i][2] == 'V') || (angleArr[i][1] == 'V' && angleArr[i][2] == 'M')) {
+                            minAngleIdx = i
+                            minAngle = angleArr[i][0]
+                        }
+                    } else if (angleArr[i][0] < minAngle) {
+                        minAngleIdx = i
+                        minAngle = angleArr[i][0]
+                    }
+                }
+                if (!((angleArr[minAngleIdx][1] == 'M' && angleArr[minAngleIdx][2] == 'V') || (angleArr[minAngleIdx][1] == 'V' && angleArr[minAngleIdx][2] == 'M'))) {
+                    return false
+                }
+                if (minAngleIdx >= 0) {
+                    let prevIdx = minAngleIdx - 1
+                    if (prevIdx < 0) {
+                        prevIdx += angleArr.length
+                    }
+                    let nextIdx = (minAngleIdx + 1) % angleArr.length
+                    let newItem = []
+                    newItem.push(angleArr[prevIdx][0] - angleArr[minAngleIdx][0] + angleArr[nextIdx][0])
+                    newItem.push(angleArr[prevIdx][1])
+                    newItem.push(angleArr[nextIdx][2])
+                    angleArr[minAngleIdx] = newItem
+                    angleArr = angleArr.filter((value, index) => {
+                        if (index !== prevIdx && index !== nextIdx) {
+                            return value
+                        }
+                    })
+                } else {
+                    return false
+                }
+            }
+            return true
         }
     }
 
@@ -1172,4 +1295,4 @@ function setSuggestTool() {
 
 
 
-export { generatePlane, resetScreen, setDrawTool, enableShortcuts, resetViewbox, drawPattern }
+export { setBorder, generatePlane, resetScreen, setDrawTool, enableShortcuts, resetViewbox, drawPattern }

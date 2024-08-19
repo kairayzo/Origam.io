@@ -136,8 +136,8 @@ export function intersect(line1, line2, outsideBounds=false) {
     // handle non-infinite gradients
         let yIntercept1 = line1[0][1] - gradient1 * line1[0][0]
         let yIntercept2 = line2[0][1] - gradient2 * line2[0][0]
-        x = (yIntercept2 - yIntercept1) / (gradient1 - gradient2)
-        y = gradient1 * x + yIntercept1
+        x = exact((yIntercept2 - yIntercept1) / (gradient1 - gradient2))
+        y = exact(gradient1 * x + yIntercept1)
     }
     if (outsideBounds || (onLine(line1, [x,y]) && onLine(line2, [x,y]))) {
         return [exact(x), exact(y)]

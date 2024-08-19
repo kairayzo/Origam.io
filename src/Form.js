@@ -1,7 +1,7 @@
 import { vertexObj, edgeObj, assignObj, envVar } from "./index.js"
 import { generateId } from "./helper.js"
 import { generateGrid, toggleGrid } from "./Grid.js"
-import { resetScreen, setDrawTool, resetViewbox, drawPattern} from "./Plane.js"
+import { resetScreen, setDrawTool, resetViewbox, drawPattern, generatePlane, setBorder} from "./Plane.js"
 import { initialiseExportForm } from "./ExportForm.js"
 import { deleteHistory, overwriteHistory, saveHistory } from "./History.js"
 
@@ -80,9 +80,12 @@ function initialiseForm() {
         envVar.activeFile = file
         if (file) {
             await loadFile(file)
+        } else {
+            setBorder()
         }
         render()
         overwriteHistory()
+        
         
         function clearObj() {
             for (let obj of [vertexObj, edgeObj, assignObj]) {
