@@ -1,24 +1,35 @@
 import { vertexObj, edgeObj, assignObj, editObjs } from "./index.js";
+import { envVar } from "./index.js";
+import { setBorder } from "./Plane.js";
 
 let history
 
 function initialiseHistory() {
     history = {
+        filename: envVar.fileDetails.fileTitle,
         index: 0,
         objs: [{vertexObj: structuredClone(vertexObj), edgeObj: structuredClone(edgeObj), assignObj: structuredClone(assignObj)}]
     }
 }
 
+function overwriteFilename() {
+    history.filename = envVar.fileDetails.fileTitle
+}
+
 function saveHistory() {
+    console.log('history saved')
     localStorage.setItem('origami-editor', JSON.stringify(history))
 }
 
 function retrieveHistory() {
     history = JSON.parse(localStorage.getItem('origami-editor'))
-    if (history) {
-        getHistory()
-        return true
+    if (!history) {
+        setBorder()
+        initialiseHistory()
+        saveHistory()
     }
+    envVar.fileDetails.fileTitle = history.filename
+    getHistory()
 }
 
 function deleteHistory() {
@@ -57,4 +68,4 @@ function backHistory() {
     }
 }
 
-export {initialiseHistory, saveHistory, retrieveHistory, deleteHistory, overwriteHistory, getHistory, forwardHistory, backHistory}
+export {history, initialiseHistory, overwriteFilename, saveHistory, retrieveHistory, deleteHistory, overwriteHistory, getHistory, forwardHistory, backHistory}

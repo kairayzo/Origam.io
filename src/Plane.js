@@ -1,18 +1,15 @@
 import { vertexObj, edgeObj, assignObj, envVar} from "./index.js"
-import { line } from "./Line.js"
+import { circle, line } from "./Elements.js"
 import { generateId, exists, inArray, getCoordId, getKey, parseLength, exact, clearChildren, removeListeners,  dot, minus, clamp, times, plus, grad, grad2, midPoint, within, ontop, closest, distTo, onLine, intersect, equalVal, equalCoords, equalLine, lineGrad, acrossPts, bisectPts, bisectAngle, cutLine, bisectLines, cutPoint } from "./helper.js"
-import { circle } from "./Circle.js"
 import { backHistory, forwardHistory, initialiseHistory, overwriteHistory, retrieveHistory } from "./History.js"
+import { handleNewFileClick, handleOpenFilePicker, handleSaveClick } from "./Header.js"
+import { openExportForm } from "./ExportForm.js"
+import { setToast } from "./Notifs.js"
 
 let toolCleanupFunc
 
 function generatePlane() {
-    if (!retrieveHistory()) {
-        setBorder()
-        initialiseHistory()
-    }
     drawPattern()
-
 }
 
 function setBorder() {
@@ -30,37 +27,55 @@ function setBorder() {
 }
 
 function trackCoords() {
-    const screen = document.querySelector('#screen')
+    const interf = document.querySelector('#interface')
     const pointerDisplay = document.querySelector('#pointerDisplay')
     const pointerX = pointerDisplay.querySelector('#pointerX')
     const pointerY = pointerDisplay.querySelector('#pointerY')
     const pointer = document.querySelector('#pointer')
 
-    if (envVar.activeTool == 'draw') {
-        screen.addEventListener('mousemove', e=>trackPointer(e))
-    } else {
-        screen.addEventListener('mousemove', e=>trackMouse(e))
-    }
-    screen.addEventListener('mouseenter',e=>showDisplay(e))
-    screen.addEventListener('mouseout', e=>hideDisplay(e))
+    interf.addEventListener('mousemove', e=>track(e))
+    // if (envVar.activeTool == 'draw') {
+    //     interf.addEventListener('mousemove', e=>trackPointer(e))
+    // } else {
+    //     interf.addEventListener('mousemove', e=>trackMouse(e))
+    // }
+    interf.addEventListener('mouseenter',e=>showDisplay(e))
+    interf.addEventListener('mouseleave', e=>hideDisplay(e))
 
-    function trackMouse(e) {
+    function track(e) {
         e.preventDefault()
-        let pointerPosition = getPointFromEvent(e)
-        let x = Math.round(pointerPosition.x * 100)/100
-        let y = Math.round((envVar.height - pointerPosition.y) * 100)/100
-        pointerX.innerHTML = `x: ${x}`
-        pointerY.innerHTML = `y: ${y}`
+        if (envVar.activeTool != 'draw') {
+            let pointerPosition = getPointFromEvent(e)
+            let x = Math.round(pointerPosition.x * 100)/100
+            let y = Math.round((envVar.height - pointerPosition.y) * 100)/100
+            pointerX.innerHTML = `x: ${x}`
+            pointerY.innerHTML = `y: ${y}`
+        } else {
+            let pointerCoord = getElemCoord(pointer)
+            let x = Math.round(pointerCoord[0] * 100)/100
+            let y = Math.round(pointerCoord[1] * 100)/100
+            pointerX.innerHTML = `x: ${x}`
+            pointerY.innerHTML = `y: ${y}`
+        }
     }
 
-    function trackPointer(e) {
-        e.preventDefault()
-        let pointerCoord = getElemCoord(pointer)
-        let x = Math.round(pointerCoord[0] * 100)/100
-        let y = Math.round(pointerCoord[1] * 100)/100
-        pointerX.innerHTML = `x: ${x}`
-        pointerY.innerHTML = `y: ${y}`
-    }
+    // function trackMouse(e) {
+    //     e.preventDefault()
+    //     let pointerPosition = getPointFromEvent(e)
+    //     let x = Math.round(pointerPosition.x * 100)/100
+    //     let y = Math.round((envVar.height - pointerPosition.y) * 100)/100
+    //     pointerX.innerHTML = `x: ${x}`
+    //     pointerY.innerHTML = `y: ${y}`
+    // }
+
+    // function trackPointer(e) {
+    //     e.preventDefault()
+    //     let pointerCoord = getElemCoord(pointer)
+    //     let x = Math.round(pointerCoord[0] * 100)/100
+    //     let y = Math.round(pointerCoord[1] * 100)/100
+    //     pointerX.innerHTML = `x: ${x}`
+    //     pointerY.innerHTML = `y: ${y}`
+    // }
 
     function showDisplay(e) {
         e.preventDefault()
@@ -83,12 +98,28 @@ function trackCoords() {
     return point.matrixTransform(invertedSVGMatrix)
 }
 
+function setSvgPadding() {
+    const svg = document.querySelector('#interface')
+    let svgDim = svg.getBoundingClientRect()
+
+    if (svgDim.height > svgDim.width) {
+        envVar.svgPadding.x = 0    
+        envVar.svgPadding.x = (svgDim.height - svgDim.width) / 2
+
+    } else {
+        envVar.svgPadding.x = (svgDim.width - svgDim.height) / 2
+        envVar.svgPadding.y = 0
+    }
+}
+
 function enableShortcuts() {
-    const svg = document.querySelector('svg')
+    const svg = document.querySelector('#interface')
     let spaceDown = false
     let ctrlDown = false
+    let altDown = false
     let cursorCoord
     
+    window.addEventListener('resize', setSvgPadding)
 
     window.addEventListener('keydown', function(e) {
         if (e.repeat) {
@@ -98,22 +129,47 @@ function enableShortcuts() {
             case 'Space':
                 spaceDown = true
                 svg.style.cursor = 'move'
-                disableActiveTool()
+                disablePointerEvents()
                 break
             case 'ControlLeft' || 'ControlRight':
+                e.preventDefault()
                 ctrlDown = true
                 break
-            case 'KeyY':
-                if (ctrlDown) {
-                    handleRedo(e)
+            case 'AltLeft' || 'AltRight':
+                e.preventDefault()
+                altDown = true
+                break
+            case 'KeyN':
+                e.preventDefault()
+                if (ctrlDown) handleNewFileClick()
+                break
+            case 'KeyO':
+                e.preventDefault()
+                if (ctrlDown) handleOpenFilePicker()
+                break
+            case 'KeyS':
+                e.preventDefault()
+                if (ctrlDown && altDown) {
+                    openExportForm()
+                } else if (ctrlDown) {
+                    handleSaveClick()
                 }
                 break
+            case 'KeyY':
+                if (ctrlDown) handleRedo(e)
+                break
             case 'KeyZ':
-                if (ctrlDown) {
-                    handleUndo(e)
-                }
+                if (ctrlDown) handleUndo(e)
+                break
+            case 'Equal':
+                if (ctrlDown) e.preventDefault(); handleZoom(true)
+                break
+            case 'Minus':
+                if (ctrlDown) e.preventDefault(); handleZoom(false)
+                break
             case 'Escape':
-                resetScreen()
+                resetInterface()
+                break
         }  
     })
     window.addEventListener('keyup', function(e) {
@@ -122,11 +178,14 @@ function enableShortcuts() {
                 spaceDown = false
                 svg.style.cursor = 'default'
                 svg.dispatchEvent(new Event('spaceclickup'))
-                resetActiveTool()
-                trackCoords()
+                enablePointerEvents()
+                // trackCoords()
                 break
             case 'ControlLeft' || 'ControlRight':
                 ctrlDown = false
+                break
+            case 'AltLeft' || 'AltRight':
+                altDown = false
                 break
         }
     })
@@ -205,22 +264,10 @@ function enableShortcuts() {
         // adjust viewbox
         viewBox.width = newWidth
         viewBox.height = newHeight
-        viewBox.x = cursorCoord.x - e.offsetX * envVar.width / svg.children[0].getBoundingClientRect().width
-        viewBox.y = cursorCoord.y - e.offsetY * envVar.height / svg.children[0].getBoundingClientRect().height
-    }
-    
-    function handleUndo(e) {
-        e.preventDefault()
-        backHistory()
-        drawPattern()
-        resetScreen()
-    }
+        
+        viewBox.x = cursorCoord.x - e.offsetX * envVar.width / svg.children[0].getBoundingClientRect().width + envVar.svgPadding.x * envVar.width / svg.children[0].getBoundingClientRect().width
+        viewBox.y = cursorCoord.y - e.offsetY * envVar.height / svg.children[0].getBoundingClientRect().height + envVar.svgPadding.y * envVar.height / svg.children[0].getBoundingClientRect().height
 
-    function handleRedo(e) {
-        e.preventDefault()
-        forwardHistory()
-        drawPattern()
-        resetScreen()
     }
 
     let touchEventCache = []
@@ -240,7 +287,9 @@ function enableShortcuts() {
         // if two pointers are down, check for pinch gestures
         if (touchEventCache.length == 2) {
             // calculate the distance between the two pointers
-            let currDiff = Math.abs(touchEventCache[0].clientX - evCache[1].clientX)
+            let currDiff = Math.abs(touchEventCache[0].clientX - touchEventCache[1].clientX)
+            // let diffX = Math.abs(touchEventCache[0].clientX - touchEventCache[1].clientX)
+            // let diffY = Math.abs(touchEventCache[0].clientY - touchEventCache[1].clientY)
             if (prevDiff > 0) {
                 if (currDiff > prevDiff) {
                     console.log('zooming in')
@@ -262,21 +311,52 @@ function enableShortcuts() {
     }
 }
 
-function resetScreen() {
-    const screen = document.querySelector('#screen')
+function handleUndo(e) {
+    e.preventDefault()
+    backHistory()
+    drawPattern()
+    resetInterface()
+}
+
+function handleRedo(e) {
+    e.preventDefault()
+    forwardHistory()
+    drawPattern()
+    resetInterface()
+}
+
+function handleZoom(zoomin=true) {
+    const svg = document.querySelector('#interface')
+    let viewBox = svg.viewBox.baseVal
+    let svgRect = svg.getBoundingClientRect()
+
+    // increase / decrease viewbox width depending on zoom in / out
+    let newWidth = zoomin ? viewBox.width - envVar.width * 0.1 : viewBox.width + envVar.width * 0.1
+    let newHeight = zoomin ? viewBox.height - envVar.height * 0.1 : viewBox.height + envVar.height * 0.1
+
+    // clamp viewbox width and height with a lower and upper limit
+    newWidth = Math.min(Math.max(envVar.defaultViewBox.width - envVar.width, newWidth), envVar.defaultViewBox.width + 2*envVar.width)
+    newHeight = Math.min(Math.max(envVar.defaultViewBox.height - envVar.height, newHeight), envVar.defaultViewBox.height + 2*envVar.height)
+
+    viewBox.width = newWidth
+    viewBox.height = newHeight
+
+    // center viewbox
+    viewBox.x = envVar.width / 2 - svgRect.width / 2 * envVar.width / svg.children[0].getBoundingClientRect().width + envVar.svgPadding.x * envVar.width / svg.children[0].getBoundingClientRect().width
+    viewBox.y = envVar.height / 2 - svgRect.height / 2 * envVar.height / svg.children[0].getBoundingClientRect().height + envVar.svgPadding.y * envVar.height / svg.children[0].getBoundingClientRect().height
+    
+}
+function resetInterface() {
     const markers = document.querySelector('#markers')
     const selectors = document.querySelector('#selectors')
 
-    removeListeners(screen)
-    clearChildren(screen)
     clearChildren(markers)
     clearChildren(selectors)
     resetActiveTool()
-    trackCoords()
+    // trackCoords()
 }
 
-function resetViewbox(e) {
-    e.preventDefault()
+function resetViewbox() {
     const svg = document.querySelector('svg');
     let viewBox = svg.viewBox.baseVal
     let width = viewBox.width
@@ -325,44 +405,43 @@ function toggleAssign(e) {
     let pointerPosition = getPointFromEvent(e)
     let x = Math.round(pointerPosition.x * 100)/100
     let y = Math.round((envVar.height - pointerPosition.y) * 100)/100
-    let cursorCoord = scaleDownCoords([x,y])
-    for (let [lineId, lineVal] of Object.entries(edgeObj)) {
-        let startId = lineVal[0]
-        let endId = lineVal[1]
-        let start = vertexObj[startId]
-        let end = vertexObj[endId]
-        if (onLine([start, end], cursorCoord)) {
-            let lineAssign = assignObj[lineId]
-            switch(lineAssign) {
-                case 'U':
-                    assignObj[lineId] = 'M'
-                    break
-                case 'M':
-                    assignObj[lineId] = 'V'
-                    break
-                case 'V':
-                    assignObj[lineId] = 'M'
-                    break
-                default:
-                    assignObj[lineId] = 'M'
+    if (ontop(x, 0, envVar.width) && ontop(y, 0, envVar.height)) {
+        let cursorCoord = scaleDownCoords([x,y])
+        for (let [lineId, lineVal] of Object.entries(edgeObj)) {
+            let startId = lineVal[0]
+            let endId = lineVal[1]
+            let start = vertexObj[startId]
+            let end = vertexObj[endId]
+            if (onLine([start, end], cursorCoord)) {
+                let lineAssign = assignObj[lineId]
+                switch(lineAssign) {
+                    case 'U':
+                        assignObj[lineId] = 'M'
+                        break
+                    case 'M':
+                        assignObj[lineId] = 'V'
+                        break
+                    case 'V':
+                        assignObj[lineId] = 'M'
+                        break
+                    default:
+                        assignObj[lineId] = 'M'
+                }
+                drawPattern()
+                overwriteHistory()
             }
-            drawPattern()
-            overwriteHistory()
         }
     }
 }
 
-function disableActiveTool() {
+function disablePointerEvents() {
     const screen = document.querySelector('#screen')
-    const markers = document.querySelector('#markers')
-    const selectors = document.querySelector('#selectors')
-    const pointer = document.querySelector('#pointer')
+    screen.style.pointerEvents = 'none'
+}
 
-    pointer.style.display = 'none'
-    removeListeners(screen)
-    clearChildren(screen)
-    clearChildren(markers)
-    clearChildren(selectors)
+function enablePointerEvents() {
+    const screen = document.querySelector('#screen')
+    screen.style.pointerEvents = 'none'
 }
 
 function resetActiveTool() {
@@ -629,21 +708,26 @@ function scaleUpCoords(coords) {
 }
 
 function setDrawTool() {
+    const interf = document.querySelector('#interface')
     const screen = document.querySelector('#screen')
     const pointer = document.querySelector('#pointer')
     const selectors = document.querySelector('#selectors')
     
     let selectedPointer = []
 
-    screen.addEventListener('mousemove', e=>snapPointer(e))
-    screen.addEventListener('mouseleave', e=>removePointer(e))
-    screen.addEventListener('click', e=>handlePointerClick(e))
-    screen.addEventListener('contextmenu', e=>toggleAssign(e))
+    interf.addEventListener('mousemove', snapPointer)
+    interf.addEventListener('mouseleave', removePointer)
+    screen.addEventListener('click', handlePointerClick)
+    screen.addEventListener('contextmenu', toggleAssign)
 
     // cleanup code on unmount
     return () => {
         const pointer = document.querySelector('#pointer')
         pointer.style.display = 'none'
+        interf.removeEventListener('mousemove', snapPointer)
+        interf.removeEventListener('mouseleave', removePointer)
+        screen.removeEventListener('click', handlePointerClick)
+        screen.removeEventListener('contextmenu', toggleAssign)
     }
 
     function snapPointer(e) { 
@@ -727,7 +811,7 @@ function setDrawTool() {
                 selectedPointer = []
             } else {
                 let withBorder = pointer.classList.contains('with-border')
-                addVertSelector(pointerCoord, resetScreen, withBorder)
+                addVertSelector(pointerCoord, resetInterface, withBorder)
             }
         }
     }
@@ -739,8 +823,12 @@ function setBisectorTool() {
     const markers = document.querySelector('#markers')
     const selectors = document.querySelector('#selectors')
 
-    screen.addEventListener('contextmenu', e => toggleAssign(e))
+    screen.addEventListener('contextmenu', toggleAssign)
     generateVertSelectors()
+
+    return () => {
+        screen.removeEventListener('contextmenu', toggleAssign)
+    }
 
     function generateVertSelectors() {
         for (let vertex of Object.values(vertexObj)) {
@@ -788,14 +876,19 @@ function setBisectorTool() {
                 break
             case 4:
                 // axiom 3
-                
-                let linesBisect1 = bisectLines(vertexList[0], vertexList[1], vertexList[2], vertexList[3])[0]
-                let linesBisect2 = bisectLines(vertexList[0], vertexList[1], vertexList[2], vertexList[3])[1]
-                if (linesBisect1) {
-                    addLineSelector(linesBisect1[0], linesBisect1[1], handleLineSelectorClick, [])
-                }
-                if (linesBisect2) {
-                    addLineSelector(linesBisect2[0], linesBisect2[1], handleLineSelectorClick, [])
+                let bisectLinesRes = bisectLines(vertexList[0], vertexList[1], vertexList[2], vertexList[3])
+                if (bisectLinesRes) {
+                    let linesBisect1 = bisectLinesRes[0]
+                    let linesBisect2 = bisectLinesRes[1]
+                    if (linesBisect1) {
+                        addLineSelector(linesBisect1[0], linesBisect1[1], handleLineSelectorClick, [])
+                    }
+                    if (linesBisect2) {
+                        addLineSelector(linesBisect2[0], linesBisect2[1], handleLineSelectorClick, [])
+                    }
+                } else {
+                    setToast('error', 'No line bisectors found!')
+                    resetInterface()
                 }
                 break
         }
@@ -899,8 +992,12 @@ function setCutTool() {
     const markers = document.querySelector('#markers')
     const selectors = document.querySelector('#selectors')
 
-    screen.addEventListener('contextmenu', e => toggleAssign(e))
+    screen.addEventListener('contextmenu', toggleAssign)
     generateVertSelectors()
+
+    return () => {
+        screen.removeEventListener('contextmenu', toggleAssign)
+    }
 
     function generateVertSelectors() {
         for (let vertex of Object.values(vertexObj)) {
@@ -1070,8 +1167,12 @@ function setSuggestTool() {
     const markers = document.querySelector('#markers')
     const selectors = document.querySelector('#selectors')
 
-    screen.addEventListener('contextmenu', e => toggleAssign(e))
+    screen.addEventListener('contextmenu', toggleAssign)
     generateVertSelectors()
+
+    return () => {
+        screen.removeEventListener('contextmenu', toggleAssign)
+    }
 
     // find vertices that are not on the boundary edge and
     // have odd number of surrounding edges
@@ -1295,4 +1396,4 @@ function setSuggestTool() {
 
 
 
-export { setBorder, generatePlane, resetScreen, setDrawTool, enableShortcuts, resetViewbox, drawPattern }
+export { setBorder, setSvgPadding, generatePlane, trackCoords, handleUndo, handleRedo, handleZoom, resetInterface, setDrawTool, enableShortcuts, resetViewbox, drawPattern }

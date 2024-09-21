@@ -1,0 +1,37 @@
+function initialiseSidebar() {
+    const sidebarToggle = document.querySelector('#sidebarToggle')
+    const sidebarBtns = document.querySelector('#sidebarBtns')
+    const githubBtn = document.querySelector('#githubBtn')
+    const tutorialBtn = document.querySelector('#tutorialBtn')
+    const surveyBtn = document.querySelector('#surveyBtn')
+
+    sidebarToggle.addEventListener('click', toggleSidebar)
+    for (let btn of [...Array.from(sidebarBtns.children)]) {
+        btn.addEventListener('mouseover', (e) => handleSidebarBtnHover(e, true))
+        btn.addEventListener('mouseout', (e) => handleSidebarBtnHover(e, false))
+    }
+
+    function toggleSidebar() {
+        if (sidebarBtns.style.visibility == 'visible') {
+            sidebarToggle.setAttribute('src', './public/chevron-down.svg')
+            sidebarBtns.style.visibility = 'hidden'
+        } else {
+            sidebarToggle.setAttribute('src', './public/chevron-up.svg')
+            sidebarBtns.style.visibility = 'visible'
+        }
+    }
+
+    function handleSidebarBtnHover(e, showLabel) {
+        if (e.target) {
+            const btnGrp = e.target.closest('.sidebar-btn-grp')
+            const btnLabel = btnGrp.querySelector('.sidebar-btn-label')
+            if (showLabel) {
+                btnLabel.style.visibility = 'visible'
+            } else {
+                btnLabel.style.visibility = 'hidden'
+            }
+        }
+    }
+}
+
+export { initialiseSidebar }

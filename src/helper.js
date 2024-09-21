@@ -62,6 +62,28 @@ export function removeListeners(elem) {
     elem.parentNode.replaceChild(newElem, elem)
 }
 
+export function toggleElemVisibility(elem, visible=null) {
+    if (visible == null) {
+        if (elem.style.visibility == 'visible') {
+            elem.style.visibility = 'hidden'
+        } else {
+            elem.style.visibility = 'visible'
+        }
+    } else if (visible) {
+        elem.style.visibility = 'visible'
+    } else {
+        elem.style.visibility = 'hidden'
+    }
+}
+
+export function toggleElemDisplay(elem, normal='block') {
+    if (elem.style.display == normal) {
+        elem.style.display = 'none'
+    } else {
+        elem.style.display = normal
+    }
+}
+
 /*
 Math functions
 */
@@ -123,7 +145,7 @@ export function intersect(line1, line2, outsideBounds=false) {
     let gradient2 = grad(line2[0][0], line2[0][1], line2[1][0], line2[1][1])
     let x, y
     // handle parallel lines
-    if (gradient1 == gradient2) {
+    if (gradient1 == gradient2 || (gradient1 == Infinity && gradient2 == -Infinity) || (gradient1 == -Infinity && gradient2 == Infinity)) {
         return
     // handle vertical line
     } else if (gradient1 == Infinity || gradient1 == -Infinity) {
