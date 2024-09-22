@@ -140,15 +140,12 @@ function enableShortcuts() {
                 altDown = true
                 break
             case 'KeyN':
-                e.preventDefault()
                 if (ctrlDown) handleNewFileClick()
                 break
             case 'KeyO':
-                e.preventDefault()
                 if (ctrlDown) handleOpenFilePicker()
                 break
             case 'KeyS':
-                e.preventDefault()
                 if (ctrlDown && altDown) {
                     openExportForm()
                 } else if (ctrlDown) {
