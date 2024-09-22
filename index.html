@@ -4,13 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Origam.io</title>
-    <script type="importmap">
-        {
-            "imports": {
-                "tailwindcss/": "./node_modules/tailwindcss/"
-            }
-        }
-    </script>
     <script src="https://edemaine.github.io/fold/dist/fold.js"></script>
     <script src="./src/index.js" type="module" defer></script>
     <link rel="icon" href="./public/logo.svg" sizes="48x48">
@@ -18,73 +11,6 @@
 </head>
 <body style="touch-action: none">
     <div id="root">
-        <!-- <div class="w-80 absolute left-0 z-50" id="sidebar">
-            <form id="menu" class=" flex flex-col gap-2 p-2">
-                <fieldset class="flex flex-col gap-2">
-                    <legend>Grid settings</legend>
-                    <div class="flex gap-2">
-                        <label for="#segment">Segments</label>
-                        <input type="number" id="segment">
-                    </div>
-                    <div class="flex gap-2">
-                        <label for="#stroke">Line stroke</label>
-                        <input type="number" id="stroke">
-                    </div>
-                    <div class="flex gap-2">
-                        <label for="#gridline">Toggle gridlines</label>
-                        <input type="checkbox" id="gridline" checked>
-                    </div>
-                    <div class="flex gap-2">
-                        <label for="#gridline">Toggle flat foldability</label>
-                        <input type="checkbox" id="flat">
-                    </div>
-                </fieldset>
-               
-                <fieldset class="flex flex-col gap-2">
-                    <legend>Tools</legend>
-                    <div class="flex gap-2">
-                        <button id="draw" disabled="true">Draw</button>
-                        <button id="bisector">Bisect</button>
-                        <button id="cut">Cut</button>
-                        <button id="delete">Delete</button>
-                        <button id="suggest">Suggest</button>
-                    </div>
-                    <div class="flex gap-2">
-                        <label for="edgeType">Edge type</label>
-                        <select id="edgeType" name="edgeType">
-                            <option value="M" selected>Mountain</option>
-                            <option value="V">Valley</option>
-                            <option value="U">Unassigned</option>
-                            <option value="F">Flat</option>
-                            <option value="B">Border</option>
-                        </select>
-                    </div>
-                </fieldset>
-                <div class="flex gap-2">
-                    <button id="print">Print obj</button>
-                    <button id="viewbox">Reset SVG position</button>
-                </div>
-                <div class="flex gap-2">
-                    <button id="save">Save</button>
-                    <button id="clearsave">Clear save</button>
-                </div>
-
-                <fieldset class="flex flex-col gap-2">
-                    <legend>Import / Export</legend>
-                    <label for="file">Import file</label>
-                    <div class="flex gap-2">
-                        <input type="file" accept=".fold, .json, .cp" id="file">
-                        <button id="clearfile">Clear</button>
-                    </div>
-                    <button type="button" id="export">Export</button>
-                </fieldset>
-                <div class="flex gap-2">
-                    <div id="diffX">0</div>
-                    <div id="diffY">0</div>
-                </div>
-
-            </form>
-        </div> -->
         <div id="header">
             <div class="flex gap-2 items-center">
                 <img id="logo" src="./public/logo.svg" alt="Origam.io logo">
@@ -136,7 +62,6 @@
             <div class="relative">
                 <!-- placeholder div to position edgetype menu -->
                 <div class="w-[50px] h-[50px]"></div>
-                <!-- <div id="currEdgeType" class="mountain edge-type text-xl font-bold text-white w-[50px] h-[50px] flex justify-center items-center rounded-[25px] cursor-pointer">M</div> -->
                 <svg id="typesMenu" width="150" height="150" class=" centralise" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <g id="currEdgeType" class="mountain edge-type cursor-pointer">
                         <rect x="50", y="50" width="50" height="50" rx="25" class="mountain"/>
@@ -258,14 +183,12 @@
             </div>
         </dialogue>
     </div>
-    <div id="notifs">
-        <div id="toast" class="success disappear">
-            <div class="flex gap-2 items-center">
-                <img id="toastIcon" width="32px" src="./public/success.svg" alt="success icon">
-                <div id="toastText">Toast Notifications</div>
-            </div>
-            <img id="toastClose" width="20px" class="cursor-pointer" src="./public/close.svg" alt="close button">
+    <div id="toast" class="success disappear">
+        <div class="flex gap-2 items-center">
+            <img id="toastIcon" width="32px" src="./public/success.svg" alt="success icon">
+            <div id="toastText">Toast Notifications</div>
         </div>
+        <img id="toastClose" width="20px" class="cursor-pointer" src="./public/close.svg" alt="close button">
     </div>
     <img id="sidebarToggle" class="rounded-[25px] shadow" width="50px" src="/public/chevron-up.svg" alt="sidebar toggle button">
     <div id="sidebarBtns" class="flex flex-col gap-2 items-end" style="visibility: visible">

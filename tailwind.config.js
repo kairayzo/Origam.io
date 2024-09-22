@@ -38,7 +38,5 @@ module.exports = {
         white: colors.white
       },
     },
-    plugins: {
-      tailwindcss: { config: './tailwindcss-config.js' }
-    },
+    plugins: [],
   }

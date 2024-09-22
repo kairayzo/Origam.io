@@ -45,7 +45,7 @@ function dropdownItem(text, icon=undefined, shortcut=undefined, dropdown=false) 
         const iconContainer = document.createElement('div')
         iconContainer.classList.add('dropdown-item-container')
         const iconElem = document.createElement('img')
-        iconElem.src = `../public/${icon}.svg`
+        iconElem.src = `./public/${icon}.svg`
         iconContainer.append(iconElem, textElem)
         containerElem.appendChild(iconContainer)
     } else {
