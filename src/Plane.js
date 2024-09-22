@@ -487,6 +487,7 @@ function addLineMarker(start, end, withDash=false) {
 }
 
 function addVertSelector(coord, clickHandler, withBorder=false) {
+    const selectors = document.querySelector('#selectors')
     const vertex = new circle(6, 0, 0,
         `transform:translate(${coord[0]}px,${envVar.height - coord[1]}px);
         fill:green;`
@@ -500,6 +501,7 @@ function addVertSelector(coord, clickHandler, withBorder=false) {
 }
 
 function addLineSelector(start, end, clickHandler, definedVertices=[]) {
+    const selectors = document.querySelector('#selectors')
     const newLine = line(start[0], envVar.height - start[1], end[0], envVar.height - end[1], `stroke:green; stroke-width:${envVar.strokeWidth * 2}; stroke-dasharray: 8 2`)
 
     newLine.classList.add('selector')
@@ -822,7 +824,6 @@ function setBisectorTool() {
     const screen = document.querySelector('#screen')
     const markers = document.querySelector('#markers')
     const selectors = document.querySelector('#selectors')
-
     screen.addEventListener('contextmenu', toggleAssign)
     generateVertSelectors()
 

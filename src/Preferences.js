@@ -69,12 +69,12 @@ function initialisePref() {
 
     function invalidSegment(e) {
         e.target.value = envVar.segment
-        window.alert('Grid segment must be a number')
+        window.alert('Grid segment must be a positive number')
     }
 
     function invalidStroke(e) {
         e.target.value = envVar.strokeWidth
-        window.alert('Line thickness must be a number')
+        window.alert('Line thickness must be a positive number')
     }
 
 }
