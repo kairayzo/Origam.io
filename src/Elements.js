@@ -58,7 +58,7 @@ function dropdownItem(text, icon=undefined, shortcut=undefined, dropdown=false) 
     }
     if (dropdown) {
         const chevronElem = document.createElement('img')
-        chevronElem.src = '../public/chevron-right.svg'
+        chevronElem.src = './public/chevron-right.svg'
         containerElem.appendChild(chevronElem)
     }
     

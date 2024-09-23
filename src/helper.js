@@ -209,6 +209,9 @@ export function lineGrad(a, gradient, gradientDir=undefined) {
         }
         coord1 = coords[0]
         coord2 = coords[1]
+        if (!coord1 || !coord2) {
+            return undefined
+        }
     }
     if (gradientDir != undefined) {
         if (gradientDir > Math.PI) {
@@ -301,6 +304,7 @@ export function cutPoint(a, b, c, d) {
         let y2 = a[1] + s2 * (b[1] - a[1])
         let grad2 = Math.tan((Math.atan2(y2 - c[1], x2 - c[0]) + gradCD) / 2)
         let line2 = lineGrad(c, grad2)
-        return [line1, line2]
+        let res = [line1, line2]
+        return res.filter(l => l != undefined)
     }
 }

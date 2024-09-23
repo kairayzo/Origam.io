@@ -1006,22 +1006,46 @@ function setCutTool() {
     function handleVertSelectorClick(e) {
         e.preventDefault();
         if (e.target) {
+            const markers = document.querySelector('#markers')
+            const selectors = document.querySelector('#selectors')
             let selector = e.target.closest('.selector')
             let selectorCoord = getElemCoord(selector)
             if (!vertexList.includes(selectorCoord)) {
                 vertexList.push(selectorCoord)
-                addVertMarker(selectorCoord)
-                selector.remove()
-                if (vertexList.length == 2) {
-                    addLineMarker(vertexList[0], vertexList[1])
-                } else if (vertexList.length == 4) {
-                    for (let vertSelector of document.querySelectorAll('circle.selector')) {
-                        vertSelector.remove()
-                    }
+
+                switch(vertexList.length) {
+                    case 1: 
+                        addVertMarker(selectorCoord)
+                        selector.remove()
+                        break
+                    case 2:
+                        clearChildren(markers)
+                        addLineMarker(vertexList[0], vertexList[1])
+                        clearChildren(selectors)
+                        generateVertSelectors()
+                        break
+                    case 3:
+                        addVertMarker(selectorCoord)
+                        clearChildren(selectors)
+                        generateLineSelectors(vertexList)
+                        generateVertSelectors()
+                        break
+                    case 4:
+                        addVertMarker(selectorCoord)
+                        clearChildren(selectors)
+                        generateLineSelectors(vertexList)
+                        break
                 }
-                if (vertexList.length > 2) {
-                    generateLineSelectors(vertexList)
-                }
+                // if (vertexList.length == 2) {
+                //     addLineMarker(vertexList[0], vertexList[1])
+                // } else if (vertexList.length == 4) {
+                    
+                // }
+                // if (vertexList.length > 2) {
+                //     generateLineSelectors(vertexList)
+                //     clearChildren(selectors)
+                //     generateVertSelectors()
+                // }
             }
         }
     }
@@ -1037,13 +1061,20 @@ function setCutTool() {
                 let lineCut = cutLine(vertexList[0], vertexList[1], vertexList[2])
                 if (lineCut) {
                     addLineSelector(lineCut[0], lineCut[1], handleLineSelectorClick, [])
+                } else {
+                    setToast('error', 'No perpendicular bisectors found')
                 }
                 break
             case 4:
                 // axiom 5
                 let pointCut = cutPoint(vertexList[0], vertexList[1], vertexList[2], vertexList[3])
-                for (let line of pointCut) {
-                    addLineSelector(line[0], line[1], handleLineSelectorClick, [])
+                console.log(pointCut)
+                if (pointCut) {
+                    for (let line of pointCut) {
+                        addLineSelector(line[0], line[1], handleLineSelectorClick, [])
+                    }
+                } else {
+                    setToast('error', 'No bisectors found')
                 }
                 break
         }
