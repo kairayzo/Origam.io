@@ -223,7 +223,7 @@
         filter: invert(91%) sepia(27%) saturate(0%) hue-rotate(45deg) brightness(108%) contrast(101%);
     }
 
-    .edge-type:hover {
+    .edge-type:not(#currEdgeType):hover {
         opacity: 0.7
     }
 

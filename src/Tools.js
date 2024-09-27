@@ -17,7 +17,7 @@ function initialiseTools() {
     cutToolBtn.addEventListener('click', e=> handleToolSelect(e))
     deleteToolBtn.addEventListener('click', e=>handleToolSelect(e))
     suggestToolBtn.addEventListener('click', e=>handleToolSelect(e))
-    edgeTypeBtn.addEventListener('click', toggleTypesMenu)
+    // edgeTypeBtn.addEventListener('click', toggleTypesMenu)
     for (let typeOption of Array.from(typesOptions.children)) {
         typeOption.addEventListener('click', handleTypeSelect)
     }
@@ -126,7 +126,7 @@ function initialiseTools() {
             // change appearance in backend
             selectEdge(selectedType)
 
-            toggleElemVisibility(edgeTypeOptions, false)
+            // toggleElemVisibility(edgeTypeOptions, false)
         }
     }
 

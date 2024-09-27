@@ -37,7 +37,7 @@ export const envVar = {
         'B' : 'black',
         'F' : 'lightgrey'
     },
-    'defaultViewBox': {x: -50, y: -50, width: 700, height: 700},
+    'defaultViewBox': {x: -50, y: -10, width: 700, height: 700},
     'svgPadding': {x: 0, y: 0},
     'activeTool': 'draw'
 }

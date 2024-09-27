@@ -167,9 +167,8 @@ function setHelp(title='', desc='') {
     if (title && desc) {
         helpTitle.innerHTML = title
         helpDesc.innerHTML = desc
-        if (helpWindow.style.visibility = 'hidden') {
-            let timeoutId = setTimeout(() => toggleElemVisibility(helpWindow, true), 3000)
-            return timeoutId
+        if (helpWindow.style.visibility == 'hidden') {
+            setTimeout(() => toggleElemVisibility(helpWindow, true), 3000)
         }
     } else {
         helpTitle.innerHTML = DEFAULT_HELP_TITLE
@@ -178,11 +177,16 @@ function setHelp(title='', desc='') {
 }
 
 function setHelpOnHover(elem, title, desc) {
-    let timeoutId
+    const helpToggle = document.querySelector('#helpToggle')
     const helpWindow = document.querySelector('#helpWindow')
-    elem.addEventListener('mouseover', ()=> timeoutId = setHelp(title, desc))
-    elem.addEventListener('mouseout', ()=> timeoutId ? clearTimeout(timeoutId) : null)
+    elem.addEventListener('mouseover', ()=> setHelp(title, desc))
+    elem.addEventListener('mouseleave', cancelHelpHover)
     
+    function cancelHelpHover() {
+        if (helpToggle.src.includes('help.svg')) {
+            toggleElemVisibility(helpWindow, false)
+        }
+    }
 }
 
 export { setToast, setDialogue, initialiseHelp, setHelp}
