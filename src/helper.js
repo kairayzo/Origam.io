@@ -48,8 +48,8 @@ export function exact(number) {
     } else if (number < 0 && Math.log(number) > 30) {
         return -Infinity
     }
-    // return parseFloat(parseFloat(number).toPrecision(12))
-    return Math.round(number * Math.pow(10, 12)) / Math.pow(10, 12)
+    return parseFloat(parseFloat(number).toPrecision(12))
+    // return Math.round(number * Math.pow(10, 12)) / Math.pow(10, 12)
 }
  // Empty out the children of an element
 export function clearChildren(elem) {

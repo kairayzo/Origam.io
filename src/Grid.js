@@ -1,6 +1,6 @@
 import { line } from "./Elements.js"
 import { envVar } from "./index.js"
-import { clearChildren } from "./helper.js"
+import { clearChildren, exact } from "./helper.js"
 
 function generateGrid() {
 
@@ -8,7 +8,7 @@ function generateGrid() {
     let segment = envVar.segment
     let height = envVar.height
     let width = envVar.width
-    let interval = Math.ceil(height/segment)
+    let interval = exact(height/segment)
     clearChildren(grid)
     generateGridlines()
     generateGridVertices()

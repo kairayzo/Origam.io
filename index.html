@@ -23,7 +23,7 @@
         </div>
         <div id="menu-container"></div>
         <div id="display">
-            <svg class="relative" id="interface" viewBox="-50 -50 700 700" oncontextmenu="javascript:return false;"
+            <svg class="relative" id="interface" viewBox="-50 -10 700 700" oncontextmenu="javascript:return false;"
             preserveAspectRatio="xMidYMid meet"
             >
                 <g id ="paper">
@@ -42,7 +42,7 @@
             </svg>
         </div>
         <div class="toolbar" id="toolbar">
-            <div class="tools" id="tools">
+            <div class="bg-tertiary p-2 rounded-2xl flex gap-2 shadow" id="tools">
                 <div class="tool-button selected" id="draw">
                     <img src="./public/draw.svg" alt="Draw icon">
                 </div>
@@ -168,7 +168,7 @@
                 </div>
             </div>
         </div>
-        <dialogue id="dialogue">
+        <dialogue id="dialogue" class="w-min min-w-[400px] max-w-[600px] min-h-[200px] max-h-[400px] m-8 rounded-lg centralise bg-white flex flex-col shadow-md invisible">
             <div class="flex gap-2 justify-between items-center p-4 flex-grow-0">
                 <div class="flex gap-4">
                     <img id="dialogueIcon" width="24px" src="public/success.svg" alt="success icon">
@@ -182,6 +182,9 @@
                 <button id="dialogue-btn-right" class="button-filled">right</button>
             </div>
         </dialogue>
+        <video id="tutorial" class="centralise invisible" width="960" height="540" controls autoplay>
+            <source src="./public/tutorial.mp4" type="video/mp4">
+        </video> 
     </div>
     <div id="toast" class="success disappear">
         <div class="flex gap-2 items-center">
@@ -209,7 +212,7 @@
             </div>
         </a>
     </div>
-    <img id="helpToggle" class="absolute right-4 bottom-4 cursor-pointer shadow rounded-[25px]" width="50px" src="./public/help-close.svg" alt="help button">
+    <img id="helpToggle" class="absolute right-4 bottom-4 cursor-pointer shadow rounded-[25px] origin-center" width="50px" src="./public/help-close.svg" alt="help button">
     <div id="helpWindow" class="w-[300px] min-h-[100px] p-4 rounded-[8px] absolute bottom-[82px] right-4 bg-scrim flex flex-col gap-2 cursor-default">
         <div id="helpTitle" class="text-lg font-bold text-onScrim">Help window</div>
         <div id="helpDesc" class="text-sm font-medium text-onScrim ">Hover on tools for instructions</div>

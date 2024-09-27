@@ -9,6 +9,10 @@ function initialiseOverlay() {
             for (let childElem of Array.from(overlay.children)) {
                 if (childElem.id !== 'overlayBg') {
                     toggleElemVisibility(childElem, false)
+                    if (childElem.id == 'tutorial') {
+                        childElem.pause();
+                        childElem.currentTime = 0
+                    }
                 }
             }
             toggleElemVisibility(overlay, false)

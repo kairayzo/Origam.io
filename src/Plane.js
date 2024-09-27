@@ -438,7 +438,7 @@ function disablePointerEvents() {
 
 function enablePointerEvents() {
     const screen = document.querySelector('#screen')
-    screen.style.pointerEvents = 'none'
+    screen.style.pointerEvents = ''
 }
 
 function resetActiveTool() {
@@ -1094,7 +1094,6 @@ function setCutTool() {
                     x2 = lineElem.x2.baseVal.value
                     y1 = envVar.height - lineElem.y1.baseVal.value
                     y2 = envVar.height - lineElem.y2.baseVal.value
-                    addLineMarker([x1,y1],[x2,y2], true)
 
                     for (let edgeVal of Object.values(edgeObj)) {
                         let lineStart = vertexObj[edgeVal[0]]
@@ -1108,6 +1107,7 @@ function setCutTool() {
                     if (intersectPts.length == 2) {
                         confirmLine(intersectPts[0], intersectPts[1])
                     } else {
+                        addLineMarker([x1,y1],[x2,y2], true)
                         intersectPts.forEach(intersectPt => {
                             addVertSelector(intersectPt, (e) => handleAddDefinedVertices(e, definedVertices))
                         })

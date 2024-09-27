@@ -88,18 +88,16 @@ function initialiseHelp() {
         `Draw edges along vertices, edges or gridlines. Supports free hand drawing<br>
         <br>
         &#x2022; Click start and end points to draw edges<br>
-        &#x2022; Snaps onto gridlines, edges or vertices<br>
+        &#x2022; Snaps onto gridpoints, edges or vertices<br>
         <br>
         &#x2022; Right click on any edge to toggle between mountain and valley fold`
     )
     setHelpOnHover(bisectTool, 'Bisect tool',
         `Draw angle bisectors<br>
         <br>
-        &#x2022; Click on 3 points (a,b,c) to define an angle bisector along point b<br>
-        &#x2022; Then, click on an end point to draw line<br>
-        <br>
-        &#x2022; Click on 4 points (a,b,c,d) to define angle bisectors of lines ab and cd<br>
-        &#x2022; Then, click on a start and end point to draw line<br>
+        &#x2022; Click on 2 points (a,b) to define line ab or midline between a and b<br>
+        &#x2022; Click on 3 points (a,b,c) to define an angle bisector along point b. Then, click on an end point to draw line<br>
+        &#x2022; Click on 4 points (a,b,c,d) to define angle bisectors of lines ab and cd. Then, click on a start and end point to draw line<br>
         <br>
         &#x2022; Right click on any edge to toggle between mountain and valley fold`
     )
@@ -108,7 +106,7 @@ function initialiseHelp() {
         <br>
         &#x2022; Click on 2 points (a,b) to define reference line ab<br>
         &#x2022; Click on a third point c to define perpendicular bisector from c passing through ab<br>
-        &#x2022; Click on a fourth point d to define a line passing through point d that folds point c onto reference line<br>
+        &#x2022; Click on a fourth point d to define a line passing through point c that folds point d onto reference line<br>
         <br>
         &#x2022; Right click on any edge to toggle between mountain and valley fold`
     )
@@ -158,15 +156,21 @@ function setHelp(title='', desc='') {
     Tools help: hover over tools at the bottom<br>
     <br>
     &#x2022; Zoom: scroll<br>
-    &#x2022; Pan: middle mouse + drag<br>
+    &#x2022; Pan: middle mouse + drag / <br>
+    hold down space + drag<br>
     &#x2022; Undo: ctrl + Z<br>
     &#x2022; Redo: ctrl + Y`
     
     const helpTitle = document.querySelector('#helpTitle')
     const helpDesc = document.querySelector('#helpDesc')
+    const helpWindow = document.querySelector('#helpWindow')
     if (title && desc) {
         helpTitle.innerHTML = title
         helpDesc.innerHTML = desc
+        if (helpWindow.style.visibility = 'hidden') {
+            let timeoutId = setTimeout(() => toggleElemVisibility(helpWindow, true), 3000)
+            return timeoutId
+        }
     } else {
         helpTitle.innerHTML = DEFAULT_HELP_TITLE
         helpDesc.innerHTML = DEFAULT_HELP_DESC
@@ -174,7 +178,11 @@ function setHelp(title='', desc='') {
 }
 
 function setHelpOnHover(elem, title, desc) {
-    elem.addEventListener('mouseover', ()=>setHelp(title, desc))
+    let timeoutId
+    const helpWindow = document.querySelector('#helpWindow')
+    elem.addEventListener('mouseover', ()=> timeoutId = setHelp(title, desc))
+    elem.addEventListener('mouseout', ()=> timeoutId ? clearTimeout(timeoutId) : null)
+    
 }
 
 export { setToast, setDialogue, initialiseHelp, setHelp}

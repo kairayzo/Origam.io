@@ -1,3 +1,5 @@
+import { toggleElemVisibility } from "./helper.js"
+
 function initialiseSidebar() {
     const sidebarToggle = document.querySelector('#sidebarToggle')
     const sidebarBtns = document.querySelector('#sidebarBtns')
@@ -10,6 +12,8 @@ function initialiseSidebar() {
         btn.addEventListener('mouseover', (e) => handleSidebarBtnHover(e, true))
         btn.addEventListener('mouseout', (e) => handleSidebarBtnHover(e, false))
     }
+
+    tutorialBtn.addEventListener('click', handleOpenTutorial)
 
     function toggleSidebar() {
         if (sidebarBtns.style.visibility == 'visible') {
@@ -31,6 +35,15 @@ function initialiseSidebar() {
                 btnLabel.style.visibility = 'hidden'
             }
         }
+    }
+
+    function handleOpenTutorial() {
+        const overlay = document.querySelector('#overlay')
+        const tutorial = document.querySelector('#tutorial')
+        console.log(tutorial)
+        toggleElemVisibility(overlay, true)
+        toggleElemVisibility(tutorial, true)
+        tutorial.play()
     }
 }
 
