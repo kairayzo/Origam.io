@@ -1,24 +1,23 @@
 import { resetInterface } from "./Plane.js"
-import { toggleElemVisibility } from "./helper.js"
+import { toggleElemDisplay } from "./helper.js"
 import { envVar } from "./index.js"
 
 function initialiseTools() {
-    const toolbarElem = document.querySelector('#toolbar')
     const drawToolBtn = document.querySelector('#draw')
     const bisectorToolBtn = document.querySelector('#bisect')
     const cutToolBtn = document.querySelector('#cut')
     const deleteToolBtn = document.querySelector('#delete')
     const suggestToolBtn = document.querySelector('#suggest')
     const edgeTypeBtn = document.querySelector('#currEdgeType')
-    const typesOptions = document.querySelector('#edgeTypeOptions')
+    const edgeTypeMenu = document.querySelector('#edgeTypeMenu')
 
     drawToolBtn.addEventListener('click', e => handleToolSelect(e))
     bisectorToolBtn.addEventListener('click', e=>handleToolSelect(e))
     cutToolBtn.addEventListener('click', e=> handleToolSelect(e))
     deleteToolBtn.addEventListener('click', e=>handleToolSelect(e))
     suggestToolBtn.addEventListener('click', e=>handleToolSelect(e))
-    // edgeTypeBtn.addEventListener('click', toggleTypesMenu)
-    for (let typeOption of Array.from(typesOptions.children)) {
+    edgeTypeBtn.addEventListener('click', toggleTypesMenu)
+    for (let typeOption of Array.from(edgeTypeMenu.children)) {
         typeOption.addEventListener('click', handleTypeSelect)
     }
     
@@ -58,8 +57,8 @@ function initialiseTools() {
     }
 
     function toggleTypesMenu() {
-        const typesOptions = document.querySelector('#edgeTypeOptions')
-        toggleElemVisibility(typesOptions)
+        const edgeTypeMenu = document.querySelector('#edgeTypeMenu')
+        toggleElemDisplay(edgeTypeMenu)
     }
 
     function typeToClass(type) {
@@ -96,8 +95,7 @@ function initialiseTools() {
         if (e.target) {
             const selectedTypeBtn = e.target.closest('g')
             const currTypeBtn = document.querySelector('#currEdgeType')
-            const typesMenu = document.querySelector('#typesMenu')
-            const edgeTypeOptions = document.querySelector('#edgeTypeOptions')
+            const edgeTypeMenu = document.querySelector('#edgeTypeMenu')
             
             // change style of current type button
             let selectedType = selectedTypeBtn.children[1].innerHTML
@@ -114,7 +112,7 @@ function initialiseTools() {
             let edgeTypes = ['M', 'V', 'U', 'F', 'B'] 
             let idx = 0
             edgeTypes.filter(edgeType => edgeType !== selectedType).forEach(edgeType => {
-                const edgeTypeOption = edgeTypeOptions.children[idx]
+                const edgeTypeOption = edgeTypeMenu.children[idx]
                 const currFillClass = edgeTypeOption.children[0].classList[0]
                 edgeTypeOption.children[0].classList.remove(currFillClass)
                 edgeTypeOption.children[0].classList.add(typeToClass(edgeType))
@@ -126,15 +124,7 @@ function initialiseTools() {
             // change appearance in backend
             selectEdge(selectedType)
 
-            // toggleElemVisibility(edgeTypeOptions, false)
-        }
-    }
-
-
-    function closeEdgesElem() {
-        const edgesElem = document.querySelector('#edges')
-        if (edgesElem) {
-            toggleElemVisibility(edgesElem, false)
+            toggleElemDisplay(edgeTypeMenu, false)
         }
     }
 

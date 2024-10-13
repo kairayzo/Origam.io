@@ -1063,6 +1063,7 @@ function setCutTool() {
                     addLineSelector(lineCut[0], lineCut[1], handleLineSelectorClick, [])
                 } else {
                     setToast('error', 'No perpendicular bisectors found')
+                    resetInterface()
                 }
                 break
             case 4:
@@ -1075,6 +1076,7 @@ function setCutTool() {
                     }
                 } else {
                     setToast('error', 'No bisectors found')
+                    resetInterface()
                 }
                 break
         }
@@ -1342,6 +1344,9 @@ function setSuggestTool() {
                     }).sort((a,b) => a[0] - b[0])
                     if (intersectionArr.length > 0) {
                         addLineSelector(vertexCoord, intersectionArr[0][1], (e) => handleLineSelectorClick(e, suggestedAssign))
+                    } else {
+                        setToast('error', 'No flat foldable edges found')
+                        resetInterface()
                     }
                 }
             }

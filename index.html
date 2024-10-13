@@ -59,35 +59,30 @@
                     <img src="./public/suggest.svg" alt="Suggest icon">
                 </div>
             </div>
-            <div class="relative">
-                <!-- placeholder div to position edgetype menu -->
-                <div class="w-[50px] h-[50px]"></div>
-                <svg id="typesMenu" width="150" height="150" class=" centralise" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <g id="currEdgeType" class="mountain edge-type cursor-default">
-                        <rect x="50", y="50" width="50" height="50" rx="25" class="mountain"/>
-                        <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="75" y="81" text-anchor="middle">M</text>
+            <div class="relative h-[50px] w-[50px]">
+                <svg id="edgeTypeMenu" width="150" height="150" class="centralise" viewBox="0 0 150 150" fill="none" xmlns="http://www.w3.org/2000/svg" style="display: none">
+                    <g class="edge-type cursor-pointer">
+                        <path d="M30.9161 14.3237C43.7297 5.01412 59.1616 -1.38464e-06 75 0L75 45C68.6646 45 62.4919 47.0056 57.3664 50.7295L30.9161 14.3237Z" class="valley"/>
+                        <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="53" y="30">V</text>
                     </g>
-                    <g id="edgeTypeOptions">
-                        <g class="edge-type cursor-pointer">
-                            <path d="M30.9161 14.3237C43.7297 5.01412 59.1616 -1.38464e-06 75 0L75 45C68.6646 45 62.4919 47.0056 57.3664 50.7295L30.9161 14.3237Z" class="valley"/>
-                            <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="53" y="30">V</text>
-                        </g>
-                        <g class="edge-type cursor-pointer">
-                            <path d="M75 0C90.8385 1.38464e-06 106.27 5.01412 119.084 14.3237L92.6336 50.7295C87.5081 47.0056 81.3354 45 75 45L75 0Z" class="unassigned"/>
-                            <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="86" y="30">U</text>
-                        </g>
-                        <g class="edge-type cursor-pointer">
-                            <path d="M119.084 14.3237C131.897 23.6333 141.435 36.7605 146.329 51.8237L103.532 65.7295C101.574 59.7042 97.759 54.4533 92.6336 50.7295L119.084 14.3237Z" class="flat"/>
-                            <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="113" y="50">F</text>
-                        </g>
-                        <g class="edge-type cursor-pointer">
-                            <path d="M146.329 51.8237C151.224 66.887 151.224 83.113 146.329 98.1763L103.532 84.2705C105.489 78.2452 105.489 71.7548 103.532 65.7295L146.329 51.8237Z" class="border"/>
-                            <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="124" y="81">B</text>
-                        </g>
+                    <g class="edge-type cursor-pointer">
+                        <path d="M75 0C90.8385 1.38464e-06 106.27 5.01412 119.084 14.3237L92.6336 50.7295C87.5081 47.0056 81.3354 45 75 45L75 0Z" class="unassigned"/>
+                        <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="86" y="30">U</text>
                     </g>
+                    <g class="edge-type cursor-pointer">
+                        <path d="M119.084 14.3237C131.897 23.6333 141.435 36.7605 146.329 51.8237L103.532 65.7295C101.574 59.7042 97.759 54.4533 92.6336 50.7295L119.084 14.3237Z" class="flat"/>
+                        <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="113" y="50">F</text>
+                    </g>
+                    <g class="edge-type cursor-pointer">
+                        <path d="M146.329 51.8237C151.224 66.887 151.224 83.113 146.329 98.1763L103.532 84.2705C105.489 78.2452 105.489 71.7548 103.532 65.7295L146.329 51.8237Z" class="border"/>
+                    <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="124" y="81">B</text>
+                </g>
                 </svg>
-            </div>       
-        </div>
+                <svg width="50" height="50" viewBox="0 0 50 50" id="currEdgeType" class="edge-type relative cursor-pointer">
+                    <rect width="50" height="50" rx="25" class="mountain"/>
+                    <text fill="#ffffff" font-size="16" font-weight="bold" font-family="Roboto, Arial, Helvetica, sans-serif" x="25" y="31" text-anchor="middle">M</text>
+                </svg>
+            </div>
     </div>
     <div class="w-full h-full absolute left-0 top-0 z-50 invisible" id="overlay">
         <div class = "h-full w-full absolute bg-scrim" id="overlayBg"></div>
@@ -182,7 +177,7 @@
                 <button id="dialogue-btn-right" class="button-filled">right</button>
             </div>
         </dialogue>
-        <video id="tutorial" class="centralise invisible" width="960" height="540" controls autoplay>
+        <video id="tutorial" class="centralise invisible" width="960" height="540" controls>
             <source src="./public/tutorial.mp4" type="video/mp4">
         </video> 
     </div>

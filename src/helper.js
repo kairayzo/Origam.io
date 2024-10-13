@@ -76,11 +76,17 @@ export function toggleElemVisibility(elem, visible=null) {
     }
 }
 
-export function toggleElemDisplay(elem, normal='block') {
-    if (elem.style.display == normal) {
-        elem.style.display = 'none'
-    } else {
+export function toggleElemDisplay(elem, display=null, normal='block') {
+    if (display == null) {
+        if (elem.style.display == normal) {
+            elem.style.display = 'none'
+        } else {
+            elem.style.display = normal
+        }
+    } else if (display) {
         elem.style.display = normal
+    } else {
+        elem.style.display = 'none'
     }
 }
 
