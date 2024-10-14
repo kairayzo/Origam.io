@@ -40,7 +40,6 @@ function initialiseSidebar() {
     function handleOpenTutorial() {
         const overlay = document.querySelector('#overlay')
         const tutorial = document.querySelector('#tutorial')
-        console.log(tutorial)
         toggleElemVisibility(overlay, true)
         toggleElemVisibility(tutorial, true)
         tutorial.play()

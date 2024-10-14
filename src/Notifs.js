@@ -1,4 +1,4 @@
-import { removeListeners, toggleElemVisibility } from "./helper.js"
+import { removeListeners, toggleElemDisplay, toggleElemVisibility } from "./helper.js"
 
 function setToast(type, message) {
     const toast = document.querySelector('#toast')
@@ -6,6 +6,7 @@ function setToast(type, message) {
     const toastText = document.querySelector('#toastText')
     const toastClose = document.querySelector('#toastClose')
 
+    toggleElemDisplay(toast, true, 'flex')
     switch(type) {
         case 'success':
             toastIcon.setAttribute('src','./public/success.svg')
@@ -22,14 +23,18 @@ function setToast(type, message) {
     }
     toastText.innerHTML = message
 
-    toast.classList.remove('disappear')
-    const timeoutId = setTimeout(() => {
-        toast.classList.add('disappear')
-    }, 5000);
+    toast.classList.add('appear')
+    const timeoutId = setTimeout(handleCloseToast, 5000);
     toastClose.addEventListener('click', () => {
-        toast.classList.add('disappear')
         clearTimeout(timeoutId)
+        handleCloseToast()
     })
+}
+
+function handleCloseToast() {
+    const toast = document.querySelector('#toast')
+    toast.classList.remove('appear')
+    toggleElemDisplay(toast, false)
 }
 
 function setDialogue(title, text, leftBtn, rightBtn, leftHandler, rightHandler) {
@@ -168,7 +173,8 @@ function setHelp(title='', desc='') {
         helpTitle.innerHTML = title
         helpDesc.innerHTML = desc
         if (helpWindow.style.visibility == 'hidden') {
-            setTimeout(() => toggleElemVisibility(helpWindow, true), 3000)
+            let timeoutId = setTimeout(() => toggleElemVisibility(helpWindow, true), 3000)
+            return timeoutId
         }
     } else {
         helpTitle.innerHTML = DEFAULT_HELP_TITLE
@@ -179,11 +185,13 @@ function setHelp(title='', desc='') {
 function setHelpOnHover(elem, title, desc) {
     const helpToggle = document.querySelector('#helpToggle')
     const helpWindow = document.querySelector('#helpWindow')
-    elem.addEventListener('mouseover', ()=> setHelp(title, desc))
+    let timeoutId = undefined
+    elem.addEventListener('mouseenter', ()=>timeoutId = setHelp(title, desc))
     elem.addEventListener('mouseleave', cancelHelpHover)
     
     function cancelHelpHover() {
         if (helpToggle.src.includes('help.svg')) {
+            clearTimeout(timeoutId)
             toggleElemVisibility(helpWindow, false)
         }
     }

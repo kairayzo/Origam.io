@@ -1063,7 +1063,6 @@ function setCutTool() {
                     addLineSelector(lineCut[0], lineCut[1], handleLineSelectorClick, [])
                 } else {
                     setToast('error', 'No perpendicular bisectors found')
-                    resetInterface()
                 }
                 break
             case 4:

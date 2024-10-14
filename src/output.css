@@ -240,6 +240,7 @@ div#filename {
 .dropdown-item {
   position: relative;
   display: flex;
+  height: var(--dropdown-item-height);
   min-width: 160px;
   cursor: pointer;
   align-items: center;
@@ -268,7 +269,7 @@ div#filename {
 
 #file-dropdown, #edit-dropdown {
   position: absolute;
-  left: 160px;
+  left: 192px;
   top: 0px;
   width: -moz-max-content;
   width: max-content;
@@ -400,7 +401,7 @@ circle.marker, line.selector {
   filter: invert(91%) sepia(27%) saturate(0%) hue-rotate(45deg) brightness(108%) contrast(101%);
 }
 
-.edge-type:not(#currEdgeType):hover {
+.edge-type:hover {
   opacity: 0.7
 }
 
@@ -445,9 +446,10 @@ circle.marker, line.selector {
   top: calc(var(--header-height) + 0.5rem);
   left: 50%;
   transform: translateX(-50%);
-  display: flex;
+  display: none;
   justify-content: space-between;
   align-items: center;
+  opacity: 0;
   transition: opacity 300ms ease-in;
   cursor: default
 }
@@ -466,10 +468,26 @@ circle.marker, line.selector {
   color: rgb(179 38 30 / var(--tw-text-opacity))
 }
 
-.disappear {
-  visibility: hidden;
-  opacity: 0;
-  transition: opacity 300ms ease-out;
+.appear {
+  animation: fadeInFromNone 5s ease-in-out;
+}
+
+@keyframes fadeInFromNone {
+  0% {
+    opacity: 0;
+  }
+
+  5% {
+    opacity: 1;
+  }
+
+  95% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
 }
 
 @keyframes ping {
@@ -875,6 +893,10 @@ circle.marker, line.selector {
 .blur {
   --tw-blur: blur(8px);
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+}
+
+.\!filter {
+  filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow) !important
 }
 
 .filter {
