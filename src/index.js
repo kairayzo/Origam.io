@@ -14,6 +14,13 @@ export let vertexObj = {}
 export let edgeObj = {}
 export let assignObj = {}
 export const FOLD = require('fold')
+export const defaultFileDetails = {
+    'fileTitle': 'Crease Pattern 1',
+    'fileAuthor': '',
+    'fileCreator': '',
+    'fileSpec': '',
+    'fileClasses': []
+}
 
 export const envVar = {
     'fileDetails': {

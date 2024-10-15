@@ -2,8 +2,8 @@ import { dropdownItem, dropdownList } from "./Elements.js"
 import { openExportForm } from "./ExportForm.js"
 import { generateGrid, toggleGrid } from "./Grid.js"
 import { generateId, toggleElemVisibility } from "./helper.js"
-import { backHistory, deleteHistory, history, overwriteFilename, overwriteHistory, retrieveHistory, saveHistory } from "./History.js"
-import { vertexObj, edgeObj, assignObj, envVar, editObjs, FOLD } from "./index.js"
+import { backHistory, deleteHistory, history, initialiseHistory, overwriteFilename, overwriteHistory, retrieveHistory, saveHistory } from "./History.js"
+import { vertexObj, edgeObj, assignObj, envVar, editObjs, FOLD, defaultFileDetails } from "./index.js"
 import { setDialogue, setToast } from "./Notifs.js"
 import { drawPattern, handleRedo, handleUndo, handleZoom, resetInterface, setBorder, setDrawTool } from "./Plane.js"
 import { openPrefWindow } from "./Preferences.js"
@@ -126,10 +126,8 @@ function handleNewFileClick() {
 function createNewFile() {
     const fileInput = document.querySelector('#file')
 
-    deleteHistory()
     fileInput.value = null
     handleImportFile()
-    saveHistory()
 
 }
 
@@ -165,9 +163,9 @@ async function handleImportFile() {
         await loadFile(file)
     } else {
         setBorder()
+        resetFileDetails()
     }
     render()
-    overwriteHistory()
 
     async function loadFile(file) {
         
@@ -229,9 +227,21 @@ function handleSaveClick() {
     setToast('success', 'File saved')
 }
 
+function assignTitle() {
+    const filenameElem = document.querySelector('#filename')
+    filenameElem.innerHTML = envVar.fileDetails.fileTitle
+}
+
+function resetFileDetails() {
+    envVar.fileDetails = defaultFileDetails
+}
+
 function render() {
     generateGrid()
     toggleGrid()
+    assignTitle()
+    initialiseHistory()
+    saveHistory()
     resetInterface()
     drawPattern()
 }
