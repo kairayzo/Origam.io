@@ -1,54 +1,48 @@
-import { vertexObj, edgeObj, assignObj, FOLD, envVar} from "./index.js"
-import { svg } from "./Elements.js"
-import { toggleElemVisibility } from "./helper.js"
+import { FOLD } from "../index.js"
+import * as backend from "../backend/backend.js"
+
+const exportForm = document.querySelector('#exportForm')
+const confirmExport = document.querySelector('#exportBtn')
+const closeBtn = document.querySelector('#export-close')
+const overlay = document.querySelector('#overlay')
+
+const fileTitleInput = document.querySelector('#fileTitle')
+const fileAuthorInput = document.querySelector('#fileAuthor')
+const fileCreatorInput = document.querySelector('#fileCreator')
+const fileSpecInput = document.querySelector('#fileSpec')
+const fileClasses = document.querySelector('#fileClasses')
+let previewElem = document.querySelector('#preview')
 
 function initialiseExportForm() {
-    
-    const exportForm = document.querySelector('#exportForm')
-    const confirmExport = document.querySelector('#exportBtn')
-    const titleInput = document.querySelector('#fileTitle')
-    const closeBtn = document.querySelector('#export-close')
-    // exportBtn.addEventListener('click', (e) => openExportForm(e))
     closeBtn.addEventListener('click', (e) => closeExportForm(e))
     confirmExport.addEventListener('click', (e) => handleExportClick(e))
 }
 
 function openExportForm() {
-    const overlay = document.querySelector('#overlay')
-    const exportForm = document.querySelector('#exportForm')
-    const fileTitleInput = document.querySelector('#fileTitle')
-    const fileAuthorInput = document.querySelector('#fileAuthor')
-    const fileCreatorInput = document.querySelector('#fileCreator')
-    const fileSpecInput = document.querySelector('#fileSpec')
-    const fileClasses = document.querySelector('#fileClasses')
-    
-    fileTitleInput.value = envVar.fileDetails.fileTitle
-    fileAuthorInput.value = envVar.fileDetails.fileAuthor
-    fileCreatorInput.value = envVar.fileDetails.fileCreator
-    fileSpecInput.value = envVar.fileDetails.fileSpec
-    for (let cls of envVar.fileDetails.fileClasses) {
+    fileTitleInput.value = backend.data.envVar.fileDetails.fileTitle
+    fileAuthorInput.value = backend.data.envVar.fileDetails.fileAuthor
+    fileCreatorInput.value = backend.data.envVar.fileDetails.fileCreator
+    fileSpecInput.value = backend.data.envVar.fileDetails.fileSpec
+    for (let cls of backend.data.envVar.fileDetails.fileClasses) {
         const clsInput = fileClasses.querySelector(`#${cls}`)
         clsInput.checked = true
     }
 
     loadPreview()
-    toggleElemVisibility(overlay, true)
-    toggleElemVisibility(exportForm, true)
+    backend.dom.toggleElemVisibility(overlay, true)
+    backend.dom.toggleElemVisibility(exportForm, true)
 }
 
 function closeExportForm(e) {
     e.preventDefault()
-    const overlay = document.querySelector('#overlay')
-    const exportForm = document.querySelector('#exportForm')
-    toggleElemVisibility(overlay, false)
-    toggleElemVisibility(exportForm, false)
+    backend.dom.toggleElemVisibility(overlay, false)
+    backend.dom.toggleElemVisibility(exportForm, false)
 }
 
 function loadPreview() {
-    let previewElem = document.querySelector('#preview')
     let plane = document.querySelector('#plane')
     let previewGroup = plane.cloneNode(true)
-    let previewSvg = svg(300, 300)
+    let previewSvg = backend.elements.svg(300, 300)
     previewSvg.setAttribute('viewBox', '-5 -5 610 610')
     previewSvg.appendChild(previewGroup)
     previewElem.innerHTML = ''
@@ -98,13 +92,13 @@ function handleExport(e) {
     function generateMaps() {
         //maps vertexId to index in verticesCoords
         let vIdMap = {} 
-        for (let [id, vertex] of Object.entries(vertexObj)) {
+        for (let [id, vertex] of Object.entries(backend.data.vertexObj)) {
             vIdMap[id]= verticesCoords.push(vertex) - 1
         }
     
-        for (let [id, pair] of Object.entries(edgeObj)) {
+        for (let [id, pair] of Object.entries(backend.data.edgeObj)) {
             edgesVertices.push([vIdMap[pair[0]], vIdMap[pair[1]]])
-            edgesAssignment.push(assignObj[id])
+            edgesAssignment.push(backend.data.assignObj[id])
         }
     }
     

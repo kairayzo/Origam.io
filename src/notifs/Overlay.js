@@ -1,23 +1,22 @@
-import { toggleElemVisibility } from "./helper.js"
+import * as backend from "../backend/backend.js"
 
-function initialiseOverlay() {
-    const overlay = document.querySelector('#overlay')
+const overlay = document.querySelector('#overlay')
+
+export default function initialiseOverlay() {
     overlay.addEventListener('click', closeOverlay)
 
     function closeOverlay(e) {
         if (e.target.id == 'overlayBg') {
             for (let childElem of Array.from(overlay.children)) {
                 if (childElem.id !== 'overlayBg') {
-                    toggleElemVisibility(childElem, false)
+                    backend.dom.toggleElemVisibility(childElem, false)
                     if (childElem.id == 'tutorial') {
                         childElem.pause();
                         childElem.currentTime = 0
                     }
                 }
             }
-            toggleElemVisibility(overlay, false)
+            backend.dom.toggleElemVisibility(overlay, false)
         }
     }
 }
-
-export { initialiseOverlay }

@@ -1,11 +1,12 @@
-import { toggleElemVisibility } from "./helper.js"
+import * as backend from "../backend/backend.js"
 
-function initialiseSidebar() {
-    const sidebarToggle = document.querySelector('#sidebarToggle')
-    const sidebarBtns = document.querySelector('#sidebarBtns')
-    const githubBtn = document.querySelector('#githubBtn')
-    const tutorialBtn = document.querySelector('#tutorialBtn')
-    const surveyBtn = document.querySelector('#surveyBtn')
+const sidebarToggle = document.querySelector('#sidebarToggle')
+const sidebarBtns = document.querySelector('#sidebarBtns')
+const githubBtn = document.querySelector('#githubBtn')
+const tutorialBtn = document.querySelector('#tutorialBtn')
+const surveyBtn = document.querySelector('#surveyBtn')
+
+export default function initialiseSidebar() {
 
     sidebarToggle.addEventListener('click', toggleSidebar)
     for (let btn of [...Array.from(sidebarBtns.children)]) {
@@ -40,10 +41,8 @@ function initialiseSidebar() {
     function handleOpenTutorial() {
         const overlay = document.querySelector('#overlay')
         const tutorial = document.querySelector('#tutorial')
-        toggleElemVisibility(overlay, true)
-        toggleElemVisibility(tutorial, true)
+        backend.dom.toggleElemVisibility(overlay, true)
+        backend.dom.toggleElemVisibility(tutorial, true)
         tutorial.play()
     }
 }
-
-export { initialiseSidebar }

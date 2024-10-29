@@ -1,26 +1,27 @@
-import { vertexObj, edgeObj, assignObj, envVar } from "./index.js"
-import { generateId } from "./helper.js"
-import { generateGrid, toggleGrid } from "./Grid.js"
-import { resetInterface, setDrawTool, resetViewbox, drawPattern, generatePlane, setBorder} from "./Plane.js"
-import { initialiseExportForm } from "./ExportForm.js"
-import { deleteHistory, overwriteHistory, saveHistory } from "./History.js"
+import { vertexObj, edgeObj, assignObj, envVar, deleteHistory, overwriteHistory, saveHistory } from "../data.js"
+import { generateId } from "../helper.js"
+import { generateGrid, toggleGrid } from "../edit/Grid.js"
+import { resetInterface, resetViewbox, setBorder } from "../edit/Plane.js"
+import { initialiseExportForm } from "../windows/ExportForm.js"
+import * as backend from "../backend/backend.js"
+
+const segInput = document.querySelector('#segment')
+const strInput = document.querySelector('#stroke')
+const gridInput = document.querySelector('#gridline')
+const fileInput = document.querySelector('#file')
+const clearFileBtn = document.querySelector('#clearfile')
+const drawToolBtn = document.querySelector('#draw')
+const bisectorToolBtn = document.querySelector('#bisector')
+const cutToolBtn = document.querySelector('#cut')
+const deleteToolBtn = document.querySelector('#delete')
+const suggestToolBtn = document.querySelector('#suggest')
+const edgeTypeInput = document.querySelector('#edgeType')
+const printBtn = document.querySelector('#print')
+const viewboxBtn = document.querySelector('#viewbox')
+const saveBtn = document.querySelector('#save')
+const clearSaveBtn = document.querySelector('#clearsave')
 
 function initialiseForm() {
-    const segInput = document.querySelector('#segment')
-    const strInput = document.querySelector('#stroke')
-    const gridInput = document.querySelector('#gridline')
-    const fileInput = document.querySelector('#file')
-    const clearFileBtn = document.querySelector('#clearfile')
-    const drawToolBtn = document.querySelector('#draw')
-    const bisectorToolBtn = document.querySelector('#bisector')
-    const cutToolBtn = document.querySelector('#cut')
-    const deleteToolBtn = document.querySelector('#delete')
-    const suggestToolBtn = document.querySelector('#suggest')
-    const edgeTypeInput = document.querySelector('#edgeType')
-    const printBtn = document.querySelector('#print')
-    const viewboxBtn = document.querySelector('#viewbox')
-    const saveBtn = document.querySelector('#save')
-    const clearSaveBtn = document.querySelector('#clearsave')
     
     segInput.value = envVar.segment
     strInput.value = envVar.strokeWidth
@@ -69,7 +70,7 @@ function initialiseForm() {
         generateGrid()
         toggleGrid()
         resetInterface()
-        drawPattern()
+        backend.draw.drawPattern()
     }
 
     async function handleSubmit(e) {

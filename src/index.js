@@ -1,58 +1,20 @@
+import { generateGrid, toggleGrid } from "./edit/Grid.js"
+import trackCoords from "./edit/PointerCoords.js"
+import initialiseTools from "./edit/tools/Toolbar.js"
+import initialiseHeader, { assignTitle } from "./header/Header.js"
+import initialiseHelp from "./notifs/Help.js"
+import initialiseOverlay from "./notifs/Overlay.js"
+import initialiseSidebar from "./sidebar/Sidebar.js"
+import initialisePref from "./windows/Preferences.js"
+import * as backend from "./backend/backend.js"
+import { resetInterface } from "./edit/Plane.js"
 
-import { generateGrid } from "./Grid.js"
-import { initialiseHeader } from "./Header.js"
-import { retrieveHistory } from "./History.js"
-import { initialiseHelp, setToast } from "./Notifs.js"
-import { initialiseOverlay } from "./Overlay.js"
-import { enableShortcuts, generatePlane, resetInterface, setSvgPadding, trackCoords } from "./Plane.js"
-import { initialisePref } from "./Preferences.js"
-import { initialiseSidebar } from "./Sidebar.js"
-import { initialiseTools } from "./Tools.js"
-
-
-export let vertexObj = {}
-export let edgeObj = {}
-export let assignObj = {}
 export const FOLD = require('fold')
-export const defaultFileDetails = {
-    'fileTitle': 'Crease Pattern 1',
-    'fileAuthor': '',
-    'fileCreator': '',
-    'fileSpec': '',
-    'fileClasses': []
-}
-
-export const envVar = {
-    'fileDetails': {
-        'fileTitle': 'Crease Pattern 1',
-        'fileAuthor': '',
-        'fileCreator': '',
-        'fileSpec': '',
-        'fileClasses': []
-    },
-    'strokeWidth' : 2,
-    'segment' : 8,
-    'gridlines' : true,
-    'edgeType': 'M',
-    'width': 600,
-    'height': 600,
-    'gridVertices': [],
-    'assignmentColor': {
-        'U' : 'yellow',
-        'M' : 'red',
-        'V' : 'blue',
-        'B' : 'black',
-        'F' : 'lightgrey'
-    },
-    'defaultViewBox': {x: -50, y: -10, width: 700, height: 700},
-    'svgPadding': {x: 0, y: 0},
-    'activeTool': 'draw'
-}
 
 startup()
 
 function startup() {
-    retrieveHistory()
+    backend.data.retrieveData()
     initialisePref()
     initialiseTools()
     initialiseHeader()
@@ -60,15 +22,21 @@ function startup() {
     initialiseHelp()
     initialiseOverlay()
     generateGrid()
-    generatePlane()
-    enableShortcuts()
-    resetInterface()
+    backend.draw.drawPattern()
+    backend.shortcuts.enableShortcuts()
     trackCoords()
-    setSvgPadding()
+    backend.shortcuts.setSvgPadding()
+    resetInterface()
 }
 
-export function editObjs(newVertexObj, newEdgeObj, newAssignObj) {
-    vertexObj = structuredClone(newVertexObj)
-    edgeObj = structuredClone(newEdgeObj)
-    assignObj = structuredClone(newAssignObj)
+function render() {
+    generateGrid()
+    toggleGrid()
+    assignTitle()
+    resetInterface()
+    backend.draw.drawPattern()
 }
+
+export { render }
+
+
