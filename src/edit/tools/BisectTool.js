@@ -54,12 +54,16 @@ function generateLineSelectors(vertexList) {
             backend.draw.addLineSelector(vertexList[0], vertexList[1], handleLineSelectorClick, [vertexList[0], vertexList[1]])
             // axiom 2
             // backend.draw.addLineSelector(lineAcross1[0], lineAcross1[1])
-            backend.draw.addLineSelector(lineBisect[0], lineBisect[1], handleLineSelectorClick, [])
+            if (lineBisect) {
+                backend.draw.addLineSelector(lineBisect[0], lineBisect[1], handleLineSelectorClick, [])
+            }
             break
         case 3:
             // axiom 3
             let angleBisect = backend.geom.bisectAngle(vertexList[0], vertexList[1], vertexList[2])
-            backend.draw.addLineSelector(angleBisect[0], angleBisect[1], handleLineSelectorClick, [vertexList[1]])
+            if (angleBisect) {
+                backend.draw.addLineSelector(angleBisect[0], angleBisect[1], handleLineSelectorClick, [vertexList[1]])
+            }
             break
         case 4:
             // axiom 3

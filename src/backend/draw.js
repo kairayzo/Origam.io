@@ -2,9 +2,9 @@ import { addEdge, deleteEdgeSeg, vertexObj, edgeObj, assignObj, envVar } from ".
 import { circle, line } from "./elements.js"
 import { exact } from "./helper.js"
 import { overwriteHistory } from "./history.js"
-import { events } from "./pubsub.js"
 import { clearChildren } from "./dom.js"
 import { resetActiveTool } from "../edit/tools/Toolbar.js"
+import { onLine, ontop } from "./geom.js"
 
 const plane = document.querySelector('#plane')
 const markers = document.querySelector('#markers')
@@ -27,7 +27,7 @@ function scaleUpCoords(coords) {
 }
 
 function addVertMarker(coord, withBorder=false, assign=undefined) {
-    const vertMarker = new circle(6, 0, 0, 
+    const vertMarker = circle(6, 0, 0, 
         `transform: translate(${coord[0]}px, ${envVar.height - (coord[1])}px); 
         fill: ${envVar.assignmentColor[assign ? assign : envVar.edgeType]}`
     )
@@ -45,7 +45,7 @@ function addLineMarker(start, end, withDash=false) {
 }
 
 function addVertSelector(coord, clickHandler, withBorder=false) {
-    const vertex = new circle(6, 0, 0,
+    const vertex = circle(6, 0, 0,
         `transform:translate(${coord[0]}px,${envVar.height - coord[1]}px);
         fill:green;`
     )

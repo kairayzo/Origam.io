@@ -2,9 +2,9 @@ import * as backend from "../backend/backend.js"
 
 const sidebarToggle = document.querySelector('#sidebarToggle')
 const sidebarBtns = document.querySelector('#sidebarBtns')
-const githubBtn = document.querySelector('#githubBtn')
+// const githubBtn = document.querySelector('#githubBtn')
 const tutorialBtn = document.querySelector('#tutorialBtn')
-const surveyBtn = document.querySelector('#surveyBtn')
+// const surveyBtn = document.querySelector('#surveyBtn')
 
 export default function initialiseSidebar() {
 

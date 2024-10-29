@@ -1,8 +1,10 @@
 import * as backend from "../../backend/backend.js"
+import { resetInterface } from "../Plane.js"
 
 const interf = document.querySelector('#interface')
 const screen = document.querySelector('#screen')
 const pointer = document.querySelector('#pointer')
+const plane = document.querySelector('#plane')
 
 let selectedPointer = []
 
@@ -34,7 +36,7 @@ function snapPointer(e) {
     // find coordinates and edge of min distance
     let distEdgeMap = {}
     let coordEdgeMap = {}
-    for (let lineElem of plane.children) {
+    for (let lineElem of Array.from(plane.children)) {
         let x1 = lineElem.x1.baseVal.value
         let x2 = lineElem.x2.baseVal.value
         let y1 = backend.data.envVar.height - lineElem.y1.baseVal.value
@@ -43,6 +45,7 @@ function snapPointer(e) {
         distEdgeMap[backend.geom.distTo(closestCoord, cursorCoord)] = closestCoord
         coordEdgeMap[closestCoord] = [[x1, y1], [x2, y2]]
     }
+
     let minDistToLine = Math.min.apply(null, Object.keys(distEdgeMap))
 
     if (minDistToLine < 10) {

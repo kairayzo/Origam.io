@@ -1,4 +1,4 @@
-import { envVar, getCoordId } from "./data.js"
+import { envVar } from "./data.js"
 import { exact, exists } from "./helper.js"
 
 export const dot = (a, b) => a.map((x, i) => a[i] * b[i]).reduce((m, n) => m + n)
@@ -42,7 +42,7 @@ export function onLine(line, coord) {
     let y2 = line[1][1]
 
     let gradient = grad(x1, y1, x2, y2)
-    if  (gradient == Infinity | gradient == -Infinity) {
+    if  (gradient == Infinity || gradient == -Infinity) {
         return equalVal(x1, coord[0]) && ontop(coord[1], y1, y2)
     } else if (gradient == 0) {
         return equalVal(y1, coord[1]) && ontop(coord[0], x1, x2)
@@ -84,12 +84,12 @@ export function equalVal(x1, x2) {
     if (x1 == Infinity || x2 == Infinity || x1 == -Infinity || x2 == -Infinity) {
         return x1 == x2;
     }
-    return Math.abs(x1 - x2) <= 0.01
+    return Math.abs(x1 - x2) <= 0.0001
 }
 
 // determine if two coords are equal with threshold difference
 export function equalCoords(coord1, coord2) {
-    return distTo(coord1, coord2) <= 0.01;
+    return equalVal(coord1[0], coord2[0]) && equalVal(coord1[1], coord2[1])
 }
 
 // determine if two lines are equal

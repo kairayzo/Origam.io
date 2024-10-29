@@ -1,6 +1,6 @@
 import { equalCoords, equalVal, grad, intersect, onLine, within } from "./geom.js"
 import { getKey, exists } from "./helper.js"
-import { history, setHistory, getHistory } from "./history.js"
+import { history, setHistory, getHistory, initialiseHistory } from "./history.js"
 
 let defaultFileDetails = {
     'fileTitle': 'Crease Pattern 1',
@@ -170,6 +170,9 @@ function addVertex(vertexId, coord) {
 }
 
 function addEdge(start, end, assign) {
+    if (equalCoords(start, end)) {
+        return
+    }
 
     let linesToBreak = {}
     let ptsOnAddedLine = []
@@ -237,6 +240,9 @@ function addEdge(start, end, assign) {
 }
 
 function addEdgeSeg(start, end, assign = envVar.edgeType) {
+    if (equalCoords(start, end)) {
+        return
+    }
     let lineId
     let startId = getCoordId(start)
     let endId = getCoordId(end)
@@ -248,7 +254,6 @@ function addEdgeSeg(start, end, assign = envVar.edgeType) {
     } else {
         lineId = generateId(edgeObj)
     }
-
     vertexObj[startId] = start
     vertexObj[endId] = end
     edgeObj[lineId] = [startId, endId]
@@ -303,6 +308,7 @@ function joinEdgeSeg(vertId) {
 }
 
 function breakEdge(lineId, points) {
+    console.log('break edge')
     let startId = edgeObj[lineId][0]
     let endId = edgeObj[lineId][1]
     let start = vertexObj[startId]
@@ -331,7 +337,9 @@ function breakEdge(lineId, points) {
     for (let lineSeg of lineSegArr) {
         let segStart = lineSeg[0]
         let segEnd = lineSeg[1]
-        addEdgeSeg(segStart, segEnd, assign)
+        if (!equalCoords(segStart, segEnd)) {
+            addEdgeSeg(segStart, segEnd, assign)
+        }
     }
 }
 
